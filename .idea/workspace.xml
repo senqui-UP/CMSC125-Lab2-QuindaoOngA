@@ -10,12 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3bb934b-331d-4905-9789-e6796e5b6b96" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fcfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/fcfs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mlfq.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/mlfq.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rr.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/rr.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sjf.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/sjf.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stcf.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/stcf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/gantt.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/gantt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/metrics.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/metrics.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gantt.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/gantt.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/metrics.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/metrics.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779203804295</updated>
-      <workItem from="1779211057566" duration="84000" />
+      <workItem from="1779211057566" duration="201000" />
     </task>
     <servers />
   </component>
