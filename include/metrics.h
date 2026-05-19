@@ -5,7 +5,7 @@
 
 #include "process.h"
 
-// Calculates and populates completion_time, turnaround_time, waiting_time for each process
+// Calculates and populates finish_time, turnaround_time, waiting_time for each process
 // Called after a scheduling algorithm completes.
 void calculate_metrics(Process processes[], int n);
 
