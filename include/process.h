@@ -14,8 +14,8 @@ typedef struct {
     int priority;           // Queue level — used by MLFQ                      
 
     // Computed fields (written by metrics module) ------------------
-    int completion_time;    // Clock time when process finishes    
-    int turnaround_time;    // completion_time - arrival_time      
+    int finish_time;    // Clock time when process finishes    
+    int turnaround_time;    // finish_time - arrival_time      
     int waiting_time;       // turnaround_time - burst_time     
 } Process;
 

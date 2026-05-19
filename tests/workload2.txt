@@ -1,0 +1,7 @@
+# workload2.txt — Workload with idle CPU gaps
+# Format: PID  ArrivalTime  BurstTime
+# -----------------------------------------
+1   0   3
+2   5   4
+3   6   2
+4   12  6
