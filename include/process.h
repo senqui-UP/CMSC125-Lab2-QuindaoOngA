@@ -1,0 +1,25 @@
+#ifndef PROCESS_H
+#define PROCESS_H
+
+// Process Data Structure ───────────────────────────────────────────
+
+typedef struct {
+    // Input fields (populated by workload parser) ------------------
+    int pid;                // Process ID   
+    int arrival_time;       // Clock time when process enters the ready queue  
+    int burst_time;         // Total CPU time required 
+
+    //Runtime fields (used during simulation by algorithms) ---------
+    int remaining_time;     // Remaining burst — used by STCF and RR           
+    int priority;           // Queue level — used by MLFQ                      
+
+    // Computed fields (written by metrics module) ------------------
+    int completion_time;    // Clock time when process finishes    
+    int turnaround_time;    // completion_time - arrival_time      
+    int waiting_time;       // turnaround_time - burst_time     
+} Process;
+
+// Maximum number of processes supported in a single workload
+#define MAX_PROCESSES 256
+
+#endif /* PROCESS_H */
