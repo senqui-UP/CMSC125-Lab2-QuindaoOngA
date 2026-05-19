@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include "process.h"
+#include "gantt.h"
 
 // Schedule Interfaces ──────────────────────────────────────────────
 /* All schedule_*() functions share the same signature:
@@ -9,15 +10,23 @@
  *   n          : number of processes in the array
  *   quantum    : time slice for RR (ignored by non-preemptive algorithms) */
 
+ typedef struct {
+     Process    *processes;    // Array of loaded processes
+     int         n;            // Number of processes
+     int         quantum;      // Time slice — used by RR and MLFQ
+     GanttEntry *gantt;        // Caller-allocated gantt log buffer
+     int         gantt_count;  // Number of entries written so far
+ } SchedulerState;
+
 // Non-preemptive ---------------------------------------------------
-void schedule_fcfs(Process processes[], int n, int quantum);
-void schedule_sjf (Process processes[], int n, int quantum);
+int schedule_fcfs(SchedulerState *state);
+int schedule_sjf (SchedulerState *state);
 
 // Preemptive -------------------------------------------------------
-void schedule_stcf(Process processes[], int n, int quantum);
-void schedule_rr  (Process processes[], int n, int quantum);
+int schedule_stcf(SchedulerState *state);
+int schedule_rr  (SchedulerState *state);
 
 // Multi-Level Feedback Queue ---------------------------------------
-void schedule_mlfq(Process processes[], int n, int quantum);
+int schedule_mlfq(SchedulerState *state);
 
 #endif /* SCHEDULER_H */

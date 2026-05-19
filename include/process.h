@@ -5,18 +5,21 @@
 
 typedef struct {
     // Input fields (populated by workload parser) ------------------
-    int pid;                // Process ID   
-    int arrival_time;       // Clock time when process enters the ready queue  
-    int burst_time;         // Total CPU time required 
+    int pid;                // Process ID
+    int arrival_time;       // Clock time when process enters the ready queue
+    int burst_time;         // Total CPU time required
 
     //Runtime fields (used during simulation by algorithms) ---------
-    int remaining_time;     // Remaining burst — used by STCF and RR           
-    int priority;           // Queue level — used by MLFQ                      
+    int remaining_time;     // Remaining burst — used by STCF and RR
+    int priority;           // Queue level — used by MLFQ
+    int time_in_queue;      // Time spent in current MLFQ queue level
+
 
     // Computed fields (written by metrics module) ------------------
-    int completion_time;    // Clock time when process finishes    
-    int turnaround_time;    // completion_time - arrival_time      
-    int waiting_time;       // turnaround_time - burst_time     
+    int start_time;        // Clock time of first CPU execution (-1 = unset)
+    int finish_time;        // Clock time when process finishes
+    int turnaround_time;    // finish_time - arrival_time
+    int waiting_time;       // turnaround_time - burst_time
 } Process;
 
 // Maximum number of processes supported in a single workload

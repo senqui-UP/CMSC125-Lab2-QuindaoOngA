@@ -4,11 +4,8 @@
 #include "../include/process.h"
 #include "../include/scheduler.h"
 
-void schedule_stcf(Process processes[], int n, int quantum)
-{
-    (void)processes;
-    (void)n;
-    (void)quantum;
-
+int schedule_stcf(SchedulerState *state) {
+    (void)state;
     printf("STCF selected\n");
+    return 0;
 }

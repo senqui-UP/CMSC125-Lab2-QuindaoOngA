@@ -4,11 +4,8 @@
 #include "../include/process.h"
 #include "../include/scheduler.h"
 
-void schedule_sjf(Process processes[], int n, int quantum)
-{
-    (void)processes;     
-    (void)n;
-    (void)quantum;
-
+int schedule_sjf(SchedulerState *state) {
+    (void)state;
     printf("SJF selected\n");
+    return 0;
 }

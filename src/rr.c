@@ -3,11 +3,8 @@
 #include "../include/process.h"
 #include "../include/scheduler.h"
 
-void schedule_rr(Process processes[], int n, int quantum)
-{
-    (void)processes;
-    (void)n;
-    (void)quantum;
-
+int schedule_rr(SchedulerState *state) {
+    (void)state;
     printf("RR selected\n");
+    return 0;
 }

@@ -15,8 +15,7 @@
 
 /* Reads the workload file at `filepath` into `processes[]`.
  * Returns the number of processes loaded, or -1 on error.               */
-int load_processes(const char *filepath, Process processes[], int max)
-{
+int load_processes(const char *filepath, Process processes[], int max) {
     FILE *fp = fopen(filepath, "r");
     if (!fp) {
         fprintf(stderr, "Error: cannot open input file '%s'\n", filepath);
@@ -51,8 +50,13 @@ int load_processes(const char *filepath, Process processes[], int max)
         }
 
         // Initialise remaining_time to burst_time for algorithms
-        p->remaining_time = p->burst_time;
-        p->priority       = 0; /* MLFQ starts all processes in queue 0   */
+        p->remaining_time  = p->burst_time;
+        p->priority        = 0;  /* MLFQ starts all processes in queue 0 */
+        p->time_in_queue   = 0;
+        p->start_time      = -1; /* -1 = not yet scheduled               */
+        p->finish_time     = 0;
+        p->turnaround_time = 0;
+        p->waiting_time    = 0;
 
         count++;
     }
@@ -62,8 +66,7 @@ int load_processes(const char *filepath, Process processes[], int max)
 }
 
 // Dumps the loaded process table to stdout for debugging.
-void print_processes(const Process processes[], int n)
-{
+void print_processes(const Process processes[], int n) {
     printf("\n%-6s %-14s %-12s\n", "PID", "Arrival Time", "Burst Time");
     printf("%-6s %-14s %-12s\n", "---", "------------", "----------");
     for (int i = 0; i < n; i++) {

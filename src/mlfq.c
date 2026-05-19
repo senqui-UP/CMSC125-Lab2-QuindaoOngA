@@ -4,11 +4,8 @@
 #include "../include/process.h"
 #include "../include/scheduler.h"
 
-void schedule_mlfq(Process processes[], int n, int quantum)
-{
-    (void)processes;
-    (void)n;
-    (void)quantum;
-
+int schedule_mlfq(SchedulerState *state) {
+    (void)state;
     printf("MLFQ selected\n");
+    return 0;
 }
