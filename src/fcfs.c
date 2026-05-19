@@ -1,6 +1,8 @@
 // First Come First Serve Implementation
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../include/process.h"
 #include "../include/scheduler.h"
 
@@ -14,7 +16,7 @@
  * Complexity: O(n log n) for the sort, O(n) for the simulation pass.
  * ------------------------------------------------------------------ */
 
-// Helpers ----------------------------------------------------------
+// Helpers ──────────────────────────────────────────────────────────
 // append one entry to the Gantt log
 static void gantt_append(SchedulerState *state, int pid, int start, int end) {
     if (state->gantt_count >= MAX_GANTT_ENTRIES) {
@@ -58,7 +60,7 @@ static void print_results(const Process *processes, int n) {
     printf("Average Waiting Time    : %.2f\n",   total_wt / n);
 }
 
-// schedule_fcfs ----------------------------------------------------
+// schedule_fcfs ────────────────────────────────────────────────────
 int schedule_fcfs(SchedulerState *state) {
     if (!state || state->n <= 0) {
         fprintf(stderr, "FCFS Error: empty or null workload\n");
