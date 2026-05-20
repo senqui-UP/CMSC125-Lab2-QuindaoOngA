@@ -1,0 +1,8 @@
+# simultaneous.txt — All processes arrive at t=0
+# Format: PID  ArrivalTime  BurstTime
+# -----------------------------------------
+A   0   6
+B   0   4
+C   0   8
+D   0   2
+E   0   5

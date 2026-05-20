@@ -1,0 +1,9 @@
+# staircase.txt — Staircase arrivals
+# Each process arrives exactly when the previous one finishes under FCFS,
+# so there are no idle gaps and no overlap between any pair of processes.
+# -----------------------------------------
+A   0    5
+B   5    7
+C   12   4
+D   16   9
+E   25   3

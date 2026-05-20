@@ -49,6 +49,14 @@ int load_processes(const char *filepath, Process processes[], int max) {
             continue;
         }
 
+        // Reject processes with non-positive burst time
+        if (p->burst_time <= 0) {
+            fprintf(stderr, "Warning: skipping process '%s' with "
+                            "burst_time <= 0 (got %d)\n",
+                    p->pid, p->burst_time);
+            continue;
+        }
+
         // Initialise remaining_time to burst_time for algorithms
         p->remaining_time  = p->burst_time;
         p->priority        = 0;              // MLFQ starts all processes in queue 0        

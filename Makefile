@@ -24,7 +24,7 @@ INCLUDES = -I include
 
 # Targets ───────────────────────────────────────────────────────────
 
-.PHONY: all clean test
+.PHONY: all clean test run FCFS SJF STCF RR MLFQ compare
 
 all: $(TARGET)
 
@@ -42,6 +42,21 @@ clean:
 test: all
 	@bash tests/test_suite.sh
 
-# Convenience run target
-run: all
+# Per-algorithm shortcuts ───────────────────────────────────────────
+FCFS: all
 	./$(TARGET) --algorithm FCFS --input tests/workload1.txt
+
+SJF: all
+	./$(TARGET) --algorithm SJF --input tests/workload1.txt
+
+STCF: all
+	./$(TARGET) --algorithm STCF --input tests/workload1.txt
+
+RR: all
+	./$(TARGET) --algorithm RR --input tests/workload1.txt --quantum 2
+
+MLFQ: all
+	./$(TARGET) --algorithm MLFQ --input tests/workload1.txt
+
+compare: all
+	./$(TARGET) --compare --input tests/workload1.txt

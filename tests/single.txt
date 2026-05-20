@@ -1,0 +1,5 @@
+# single.txt — Single process edge case
+# Format: PID  ArrivalTime  BurstTime
+# All algorithms: TT=10.00  WT=0.00  RT=0.00  CS=0
+# -----------------------------------------
+A   5   10

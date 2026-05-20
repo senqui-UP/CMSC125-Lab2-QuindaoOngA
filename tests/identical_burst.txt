@@ -1,0 +1,8 @@
+# identical_burst.txt — All processes have identical burst time
+# Format: PID  ArrivalTime  BurstTime
+# -----------------------------------------
+A   0   10
+B   3   10
+C   7   10
+D   11  10
+E   15  10
