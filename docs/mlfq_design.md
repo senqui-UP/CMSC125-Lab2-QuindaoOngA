@@ -118,10 +118,10 @@ if (prev_pid != -1 && prev_pid != current_pid)
 [t=20] PRIORITY BOOST — all processes → Q0
 ...
 PID | AT | BT | FT | TT | WT | RT
-  1    0    8   20   20   12    0
-  2    1    4   12   11    7    1
-  3    2    9   26   24   15    4
-  4    3    5   23   20   15    5
+  A    0    8   20   20   12    0
+  B    1    4   12   11    7    1
+  C    2    9   26   24   15    4
+  D    3    5   23   20   15    5
 ```
 
 ---

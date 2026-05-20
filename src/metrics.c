@@ -39,11 +39,13 @@ static void convoy_check(SchedulerState *state)
 
     /* Find the process with the earliest arrival (first to run) */
     Process *first = &state->processes[0];
-    for (int i = 1; i < n; i++)
-        if (state->processes[i].arrival_time < first->arrival_time ||
-            (state->processes[i].arrival_time == first->arrival_time &&
-             state->processes[i].pid < first->pid))
-            first = &state->processes[i];
+    for (int i = 1; i < n; i++) {
+        Process *p = &state->processes[i];
+        if (p->arrival_time < first->arrival_time ||
+            (p->arrival_time == first->arrival_time &&
+             strcmp(p->pid, first->pid) < 0))
+            first = p;
+    }
 
     /* Average burst time across all processes */
     double avg_bt = 0.0;
@@ -61,7 +63,7 @@ static void convoy_check(SchedulerState *state)
 
     if ((double)first->burst_time > avg_bt * 2.0 && shorter_count >= 2) {
         printf("\n  *** Potential Convoy Effect Detected ***\n");
-        printf("  First process (P%d) BT=%d > 2 x avg BT (%.1f).\n",
+        printf("  First process (P%s) BT=%d > 2 x avg BT (%.1f).\n",
                first->pid, first->burst_time, avg_bt);
         printf("  %d shorter job(s) waited behind it.\n", shorter_count);
     }
@@ -102,8 +104,8 @@ void print_metrics_table(SchedulerState *state)
     for (int i = 0; i < n; i++) {
         Process *p = &state->processes[order[i]];
         int rt     = p->start_time - p->arrival_time;
-        char plabel[16];
-        snprintf(plabel, sizeof(plabel), "P%d", p->pid);
+        char plabel[20];
+        snprintf(plabel, sizeof(plabel), "P%s", p->pid);
         printf("%-8s | %-4d | %-4d | %-4d | %-4d | %-4d | %-4d\n",
                plabel,
                p->arrival_time, p->burst_time,

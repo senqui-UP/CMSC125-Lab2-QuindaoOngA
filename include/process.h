@@ -5,7 +5,7 @@
 
 typedef struct {
     // Input fields (populated by workload parser) ------------------
-    int pid;                // Process ID   
+    char pid[16];                // Process ID   
     int arrival_time;       // Clock time when process enters the ready queue  
     int burst_time;         // Total CPU time required 
 

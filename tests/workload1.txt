@@ -1,7 +1,8 @@
 # workload1.txt — Basic test workload
 # Format: PID  ArrivalTime  BurstTime
 # -----------------------------------------
-1   0   8
-2   1   4
-3   2   9
-4   3   5
+A   0    240
+B   10   180
+C   20   150
+D   25   80
+E   30   130

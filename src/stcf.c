@@ -39,21 +39,21 @@ static void gantt_coalesce(SchedulerState *state, const char *pid, int tick) {
     e->end_time    = tick + 1;
     e->queue_level = -1;
 }
-
+ 
 // pick process with shortest remaining_time among arrived, unfinished
 // Tiebreak: lower PID. Returns index into local[], or -1 if none ready
 static int pick_stcf(const Process local[], const int done[], int n, int current_time) {
     int best = -1;
     for (int i = 0; i < n; i++) {
-        if (done[i] || local[i].arrival_time > current_time) continue;
-        if (best == -1) { best = i; continue; }
+        if (done[i] || local[i].arrival_time > current_time)        continue;
+        if (best == -1)                                           { best = i; continue; }
         if (local[i].remaining_time < local[best].remaining_time) { best = i; continue; }
         if (local[i].remaining_time == local[best].remaining_time &&
-            local[i].pid < local[best].pid) best = i;
+            strcmp(local[i].pid, local[best].pid) < 0)              best = i;
     }
     return best;
 }
-
+ 
 // find the next arrival time among unfinished processes ------------ */
 static int next_arrival(const Process local[], const int done[], int n, int current_time) {
     int earliest = -1;
@@ -63,7 +63,7 @@ static int next_arrival(const Process local[], const int done[], int n, int curr
             earliest = local[i].arrival_time;
     }
     return earliest;
-}
+} 
 
 // schedule_stcf ────────────────────────────────────────────────────
 int schedule_stcf(SchedulerState *state) {
@@ -71,13 +71,13 @@ int schedule_stcf(SchedulerState *state) {
         fprintf(stderr, "STCF Error: empty or null workload\n");
         return -1;
     }
-
+ 
     int n = state->num_processes;
-
+ 
     // Local working copy
     Process local[MAX_PROCESSES];
     memcpy(local, state->processes, sizeof(Process) * (size_t)n);
-
+ 
     int done[MAX_PROCESSES] = {0};
     int completed    = 0;
     int current_time = 0;
@@ -85,7 +85,7 @@ int schedule_stcf(SchedulerState *state) {
 
     while (completed < n) {
         int idx = pick_stcf(local, done, n, current_time);
-
+ 
         // Idle: no process has arrived yet
         if (idx == -1) {
             int jump = next_arrival(local, done, n, current_time);
@@ -103,26 +103,24 @@ int schedule_stcf(SchedulerState *state) {
             snprintf(prev_pid, sizeof(prev_pid), "IDLE");
             continue;
         }
-
+ 
         Process *p = &local[idx];
-
+ 
         // Context switch: process → process only
-        char cur_pid[16];
-        snprintf(cur_pid, sizeof(cur_pid), "%d", p->pid);
-        if (strcmp(prev_pid, "IDLE") != 0 && strcmp(prev_pid, cur_pid) != 0)
+        if (strcmp(prev_pid, "IDLE") != 0 && strcmp(prev_pid, p->pid) != 0)
             state->context_switches++;
-        snprintf(prev_pid, sizeof(prev_pid), "%s", cur_pid);
+        snprintf(prev_pid, sizeof(prev_pid), "%s", p->pid);
 
         // Record start_time on very first execution
         if (p->start_time == -1)
             p->start_time = current_time;
-
-        // Run for 1 tick
-        gantt_coalesce(state, cur_pid, current_time);
+ 
+        // Run for 1 tick 
+        gantt_coalesce(state, p->pid, current_time);
         current_time++;
         p->remaining_time--;
-
-        // Check completion
+ 
+        // Check completion 
         if (p->remaining_time == 0) {
             p->finish_time     = current_time;
             p->turnaround_time = p->finish_time - p->arrival_time;
@@ -131,11 +129,11 @@ int schedule_stcf(SchedulerState *state) {
             completed++;
         }
     }
-
+ 
     // Write computed metrics
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            if (state->processes[j].pid == local[i].pid) {
+            if (strcmp(state->processes[j].pid, local[i].pid) == 0) {
                 state->processes[j].start_time     = local[i].start_time;
                 state->processes[j].finish_time     = local[i].finish_time;
                 state->processes[j].turnaround_time = local[i].turnaround_time;
@@ -143,7 +141,7 @@ int schedule_stcf(SchedulerState *state) {
                 state->processes[j].remaining_time  = local[i].remaining_time;
                 break;
             }
-
+ 
     state->total_time          = current_time;
     state->completed_processes = n;
  

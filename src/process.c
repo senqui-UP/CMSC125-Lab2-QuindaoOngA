@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "../include/process.h"
 
 /* parses workload file into a Process array
@@ -41,8 +40,8 @@ int load_processes(const char *filepath, Process processes[], int max) {
         // Zero-initialise so computed/runtime fields start clean
         memset(p, 0, sizeof(Process));
 
-        if (sscanf(line, "%d %d %d",
-                   &p->pid,
+        if (sscanf(line, "%15s %d %d",
+                   p->pid,
                    &p->arrival_time,
                    &p->burst_time) != 3) {
             fprintf(stderr, "Warning: skipping malformed line: %s", line);
@@ -51,9 +50,9 @@ int load_processes(const char *filepath, Process processes[], int max) {
 
         // Initialise remaining_time to burst_time for algorithms
         p->remaining_time  = p->burst_time;
-        p->priority        = 0;  /* MLFQ starts all processes in queue 0 */
+        p->priority        = 0;              // MLFQ starts all processes in queue 0        
         p->time_in_queue   = 0;
-        p->start_time      = -1; /* -1 = not yet scheduled               */
+        p->start_time      = -1;             // -1 = not yet scheduled     
         p->finish_time     = 0;
         p->turnaround_time = 0;
         p->waiting_time    = 0;
@@ -70,7 +69,7 @@ void print_processes(const Process processes[], int n) {
     printf("\n%-6s %-14s %-12s\n", "PID", "Arrival Time", "Burst Time");
     printf("%-6s %-14s %-12s\n", "---", "------------", "----------");
     for (int i = 0; i < n; i++) {
-        printf("%-6d %-14d %-12d\n",
+        printf("%-6s %-14d %-12d\n",
                processes[i].pid,
                processes[i].arrival_time,
                processes[i].burst_time);

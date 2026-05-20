@@ -78,12 +78,12 @@ static void enqueue_arrivals(ReadyQueue *q, Process local[], int enqueued[],
         int best = -1;
         for (int i = 0; i < n; i++) {
             if (enqueued[i] || local[i].arrival_time > time) continue;
-            if (best == -1 || local[i].pid < local[best].pid) best = i;
+            if (best == -1 || strcmp(local[i].pid, local[best].pid) < 0) best = i;
         }
         if (best != -1) { queue_enqueue(q, best); enqueued[best] = 1; added = 1; }
     }
 }
-
+ 
 // find the next arrival time among un-enqueued processes
 static int next_arrival(const Process local[], const int enqueued[], int n,
                         int current_time) {
@@ -98,44 +98,44 @@ static int next_arrival(const Process local[], const int enqueued[], int n,
     }
     return earliest;
 }
-
+ 
 // schedule_rr ──────────────────────────────────────────────────────
 int schedule_rr(SchedulerState *state) {
     if (!state || state->num_processes <= 0) {
         fprintf(stderr, "RR Error: empty or null workload\n");
         return -1;
     }
-
+ 
     int quantum = state->quantum;
     if (quantum <= 0) {
         fprintf(stderr, "RR Error: quantum must be > 0 (got %d)\n", quantum);
         return -1;
     }
-
+ 
     int n = state->num_processes;
-
+ 
     // Local working copy
     Process local[MAX_PROCESSES];
     memcpy(local, state->processes, sizeof(Process) * (size_t)n);
-
+ 
     ReadyQueue q;
     queue_init(&q);
-
+ 
     int enqueued[MAX_PROCESSES] = {0};          // Tracks which processes have entered the ready queue, prevents duplicates
     int completed        = 0;
     int current_time     = 0;
     char prev_pid[16] = "IDLE";
-
+ 
     // Enqueue all processes that have already arrived at t=0
     enqueue_arrivals(&q, local, enqueued, n, current_time);
-
+ 
     while (completed < n) {
-
+ 
         // Idle: nothing in queue yet
         if (queue_empty(&q)) {
             int jump = next_arrival(local, enqueued, n, current_time);
             if (jump == -1)                     // if no more processes, should not happen
-                break;
+                break;              
             gantt_append(state, "IDLE", current_time, jump);
             state->idle_time += jump - current_time;
             current_time = jump;
@@ -144,34 +144,31 @@ int schedule_rr(SchedulerState *state) {
             enqueue_arrivals(&q, local, enqueued, n, current_time);
             continue;
         }
-
+ 
         // Dequeue next process
         int idx      = queue_dequeue(&q);
         Process *p   = &local[idx];
-
-        char cur_pid[16];
-        snprintf(cur_pid, sizeof(cur_pid), "%d", p->pid);
-
+ 
         // Count context switch (only process → process)
-        if (strcmp(prev_pid, "IDLE") != 0 && strcmp(prev_pid, cur_pid) != 0)
+        if (strcmp(prev_pid, "IDLE") != 0 && strcmp(prev_pid, p->pid) != 0)
             state->context_switches++;
-        snprintf(prev_pid, sizeof(prev_pid), "%s", cur_pid);
-
+        snprintf(prev_pid, sizeof(prev_pid), "%s", p->pid);
+ 
         // Record start_time on very first execution
         if (p->start_time == -1)
             p->start_time = current_time;
-
+ 
         // Run for min(quantum, remaining_time) ticks
         int slice = (p->remaining_time < quantum) ? p->remaining_time : quantum;
         int slice_end = current_time + slice;
-
-        gantt_append(state, cur_pid, current_time, slice_end);
+ 
+        gantt_append(state, p->pid, current_time, slice_end);
         p->remaining_time -= slice;
         current_time       = slice_end;
-
+ 
         // Enqueue arrivals that came in during this slice (before requeueing current process)
         enqueue_arrivals(&q, local, enqueued, n, current_time);
-
+ 
         // Finished process
         if (p->remaining_time == 0) {
             p->finish_time     = current_time;
@@ -182,11 +179,11 @@ int schedule_rr(SchedulerState *state) {
             queue_enqueue(&q, idx);
         }
     }
-
+ 
     // Write computed metrics back to the caller's process array
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            if (state->processes[j].pid == local[i].pid) {
+            if (strcmp(state->processes[j].pid, local[i].pid) == 0) {
                 state->processes[j].start_time     = local[i].start_time;
                 state->processes[j].finish_time     = local[i].finish_time;
                 state->processes[j].turnaround_time = local[i].turnaround_time;
@@ -194,9 +191,9 @@ int schedule_rr(SchedulerState *state) {
                 state->processes[j].remaining_time  = local[i].remaining_time;
                 break;
             }
-
+ 
     state->total_time          = current_time;
     state->completed_processes = n;
-
+ 
     return 0;
 }

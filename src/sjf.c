@@ -12,7 +12,7 @@
  *   2. Pick process with smallest burst_time and run until completion
  *   3. For ties: smallest burst_time > earliest arrival time > lowest PID
  *   4.If no process has arrived yet, jump the clock to the next arrival and insert an IDLE Gantt entry
- *
+ * 
  * Complexity: O(n^2)
  * ------------------------------------------------------------------ */
 
@@ -30,16 +30,16 @@ static void gantt_append(SchedulerState *state, const char *pid,
     e->end_time    = end;
     e->queue_level = -1;
 }
-
+ 
 // comparator for initial sort by arrival_time then PID
 static int cmp_arrival(const void *a, const void *b) {
     const Process *pa = (const Process *)a;
     const Process *pb = (const Process *)b;
     if (pa->arrival_time != pb->arrival_time)
         return pa->arrival_time - pb->arrival_time;
-    return pa->pid - pb->pid;
+    return strcmp(pa->pid, pb->pid);
 }
-
+ 
 // pick the best candidate from arrived, unfinished processes.
 // Returns index into local[] of the chosen process, or -1 if none are ready
 static int pick_shortest(const Process local[], const int done[], int n,
@@ -53,12 +53,12 @@ static int pick_shortest(const Process local[], const int done[], int n,
         if (c->burst_time > b->burst_time)                        continue;
         if (c->arrival_time < b->arrival_time)                  { best = i; continue; }
         if (c->arrival_time > b->arrival_time)                    continue;
-        if (c->pid < b->pid)                                      best = i;
+        if (strcmp(c->pid, b->pid) < 0)                           best = i;
     }
     return best;
 }
-
-// find the next arrival time among unfinished processes
+ 
+// find the next arrival time among unfinished processes 
 static int next_arrival(const Process local[], const int done[], int n,
                         int current_time)
 {
@@ -80,62 +80,60 @@ int schedule_sjf(SchedulerState *state)
     }
 
     int n = state->num_processes;
-
+ 
     // Work on a local copy — sort by arrival so idle-jump logic is clean
     Process local[MAX_PROCESSES];
     memcpy(local, state->processes, sizeof(Process) * (size_t)n);
     qsort(local, (size_t)n, sizeof(Process), cmp_arrival);
-
+ 
     int done[MAX_PROCESSES] = {0};      // tracks which processes have completed
     int completed    = 0;
     int current_time = 0;
-
+ 
     while (completed < n) {
         int idx = pick_shortest(local, done, n, current_time);
-
+ 
         // Idle gap: no process has arrived yet
         if (idx == -1) {
             int jump = next_arrival(local, done, n, current_time);
             if (jump == -1)             // if no more processes — should not happen
-                break;
+                break;                  
             gantt_append(state, "IDLE", current_time, jump);
             current_time = jump;
             continue;
         }
-
+ 
         Process *p = &local[idx];
-
-        // At first execution: record start_time
+ 
+        // At first execution: record start_time 
         p->start_time = current_time;
-
+ 
         // Run to completion (non-preemptive)
-        char pidstr[16];
-        snprintf(pidstr, sizeof(pidstr), "%d", p->pid);
-        gantt_append(state, pidstr, current_time, current_time + p->burst_time);
+        gantt_append(state, p->pid, current_time, current_time + p->burst_time);
         current_time += p->burst_time;
-
-        // Record completion and compute metrics inline
+ 
+        // Record completion and compute metrics inline 
         p->finish_time     = current_time;
         p->turnaround_time = p->finish_time - p->arrival_time;
         p->waiting_time    = p->turnaround_time - p->burst_time;
         done[idx] = 1;
         completed++;
     }
-
+ 
     // Write computed metrics
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
-            if (state->processes[j].pid == local[i].pid) {
+            if (strcmp(state->processes[j].pid, local[i].pid) == 0) {
                 state->processes[j].start_time     = local[i].start_time;
                 state->processes[j].finish_time     = local[i].finish_time;
                 state->processes[j].turnaround_time = local[i].turnaround_time;
                 state->processes[j].waiting_time    = local[i].waiting_time;
                 break;
             }
-
+ 
     state->total_time          = current_time;
     state->completed_processes = n;
     state->context_switches    = 0;
-
+ 
     return 0;
 }
