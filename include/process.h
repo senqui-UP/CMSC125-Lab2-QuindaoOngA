@@ -5,7 +5,7 @@
 
 typedef struct {
     // Input fields (populated by workload parser) ------------------
-    char pid[16];                // Process ID   
+    char pid[16];           // Process ID   
     int arrival_time;       // Clock time when process enters the ready queue  
     int burst_time;         // Total CPU time required 
 
@@ -26,5 +26,9 @@ typedef struct {
 
 // Maximum number of processes supported in a single workload
 #define MAX_PROCESSES 256
+
+/* Copy base fields from src to dst and cleanly initialize all runtime
+ * and computed fields. Use before each algorithm run in compare mode.  */
+void copy_processes(const Process *src, Process *dst, int n);
 
 #endif /* PROCESS_H */

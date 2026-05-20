@@ -12,6 +12,7 @@
  *   <PID>  <ArrivalTime>  <BurstTime> */
 
 
+// load_processes ---------------------------------------------------
 /* Reads the workload file at `filepath` into `processes[]`.
  * Returns the number of processes loaded, or -1 on error.               */
 int load_processes(const char *filepath, Process processes[], int max) {
@@ -64,6 +65,7 @@ int load_processes(const char *filepath, Process processes[], int max) {
     return count;
 }
 
+// print_processes --------------------------------------------------
 // Dumps the loaded process table to stdout for debugging.
 void print_processes(const Process processes[], int n) {
     printf("\n%-6s %-14s %-12s\n", "PID", "Arrival Time", "Burst Time");
@@ -75,4 +77,31 @@ void print_processes(const Process processes[], int n) {
                processes[i].burst_time);
     }
     printf("\n");
+}
+
+// copy_processes() -------------------------------------------------
+/* Copies only immutable base fields from src to dst, then cleanly
+ * initializes all runtime and computed fields. This ensures each
+ * algorithm in compare mode starts from a pristine state.             */
+void copy_processes(const Process *src, Process *dst, int n)
+{
+    for (int i = 0; i < n; i++) {
+        // Base fields — immutable input data
+        snprintf(dst[i].pid, sizeof(dst[i].pid), "%s", src[i].pid);
+        dst[i].arrival_time = src[i].arrival_time;
+        dst[i].burst_time   = src[i].burst_time;
+        dst[i].priority     = src[i].priority;
+ 
+        // Runtime fields — clean slates
+        dst[i].remaining_time = src[i].burst_time;
+        dst[i].time_in_queue  = 0;
+        dst[i].queue_level    = 0;
+        dst[i].quantum_used   = 0;
+ 
+        // Computed fields — unset
+        dst[i].start_time     = -1;
+        dst[i].finish_time    = 0;
+        dst[i].turnaround_time = 0;
+        dst[i].waiting_time   = 0;
+    }
 }

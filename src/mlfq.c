@@ -148,9 +148,9 @@ static int next_arrival_time(const Process local[], const int enqueued[],
  
 // boost all unfinished processes to Q0, reset time_in_queue and quantum_used
 static void do_boost(MLFQQueue queues[], Process local[], int done[],
-                     int current_time, int current_idx)
-{
-    printf("[t=%d] PRIORITY BOOST — all processes → Q0\n", current_time);
+                     int current_time, int current_idx,
+                     SchedulerState *state) {
+    if (state->verbose) printf("[t=%d] PRIORITY BOOST — all processes → Q0\n", current_time);
  
     // Drain all queues into a temporary list, sorted by PID
     int to_boost[MAX_PROCESSES];
@@ -232,14 +232,16 @@ int schedule_mlfq(SchedulerState *state)
     // Enqueue any processes already arrived at t=0
     enqueue_arrivals(queues, enqueued, local, n, current_time);
  
-    printf("\n--- MLFQ Execution Trace ---\n");
+    if (state->verbose) {
+        printf("\n--- MLFQ Execution Trace ---\n");
+    }
  
     while (completed < n) {
  
         /* -- 1. Check boost -------------------------------------------- */
         if (cfg.boost_period > 0 && boost_timer > 0 &&
             boost_timer % cfg.boost_period == 0) {
-            do_boost(queues, local, done, current_time, current_idx);
+            do_boost(queues, local, done, current_time, current_idx, state);
             state->boosts++;
             boost_timer = 0;            
             // If running process was moved to Q0, it continues this tick
@@ -254,9 +256,11 @@ int schedule_mlfq(SchedulerState *state)
             int hq = highest_queue(queues, cfg.num_queues);
             if (hq >= 0 && hq < local[current_idx].queue_level) {
                 // Higher-priority queue has a process — preempt
-                printf("[t=%d] PREEMPT P%s (Q%d) → higher priority Q%d ready\n",
-                       current_time, local[current_idx].pid,
-                       local[current_idx].queue_level, hq);
+                if (state->verbose) {
+                    printf("[t=%d] PREEMPT P%s (Q%d) → higher priority Q%d ready\n",
+                           current_time, local[current_idx].pid,
+                           local[current_idx].queue_level, hq);
+                }
                 // Put preempted process back — no demotion, quantum resets
                 local[current_idx].quantum_used = 0;
                 mq_enqueue(&queues[local[current_idx].queue_level],
@@ -297,8 +301,10 @@ int schedule_mlfq(SchedulerState *state)
             // on first execution, record start_time
             if (p->start_time == -1) p->start_time = current_time;
  
-            printf("[t=%d] RUN P%s (Q%d, remaining=%d)\n",
-                   current_time, p->pid, p->queue_level, p->remaining_time);
+            if (state->verbose) {
+                printf("[t=%d] RUN P%s (Q%d, remaining=%d)\n",
+                       current_time, p->pid, p->queue_level, p->remaining_time);
+            }
         }
  
         /* -- 5. Run current process for 1 tick ------------------------- */
@@ -320,9 +326,11 @@ int schedule_mlfq(SchedulerState *state)
             cp->waiting_time    = cp->turnaround_time - cp->burst_time;
             done[current_idx]   = 1;
             completed++;
-            printf("[t=%d] FINISH P%s (Q%d) FT=%d TT=%d WT=%d\n",
-                   current_time, cp->pid, cp->queue_level,
-                   cp->finish_time, cp->turnaround_time, cp->waiting_time);
+            if (state->verbose) {
+                printf("[t=%d] FINISH P%s (Q%d) FT=%d TT=%d WT=%d\n",
+                       current_time, cp->pid, cp->queue_level,
+                       cp->finish_time, cp->turnaround_time, cp->waiting_time);
+            }
             snprintf(prev_pid, sizeof(prev_pid), "%s", cp_pid);
             current_idx = -1;
             continue;
@@ -335,7 +343,7 @@ int schedule_mlfq(SchedulerState *state)
         /* -- 7. Check allotment exhaustion ----------------------------- */
         if (alm != INFINITE_ALLOTMENT && cp->time_in_queue >= alm) {
             int new_ql = (ql + 1 < cfg.num_queues) ? ql + 1 : ql;
-            printf("[t=%d] DEMOTE P%s Q%d → Q%d\n",
+            if (state->verbose) printf("[t=%d] DEMOTE P%s Q%d → Q%d\n",
                    current_time, cp->pid, ql, new_ql);
             cp->queue_level = new_ql;
             cp->time_in_queue = cp->quantum_used = 0;
