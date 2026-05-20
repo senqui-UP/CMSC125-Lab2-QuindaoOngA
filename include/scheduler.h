@@ -10,13 +10,28 @@
  *   n          : number of processes in the array
  *   quantum    : time slice for RR (ignored by non-preemptive algorithms) */
 
- typedef struct {
-     Process    *processes;    // Array of loaded processes
-     int         n;            // Number of processes
-     int         quantum;      // Time slice — used by RR and MLFQ
-     GanttEntry *gantt;        // Caller-allocated gantt log buffer
-     int         gantt_count;  // Number of entries written so far
- } SchedulerState;
+typedef struct SchedulerState {
+    /* -- Workload ------------------------------------------------- */
+    Process *processes;         // array of loaded processes
+    int      num_processes;     // number of processes
+    int      quantum;           // time slice for RR / MLFQ
+
+    /* -- Gantt log ------------------------------------------------ */
+    GanttEntry *gantt;          // caller-allocated entry buffer
+    int         gantt_count;    // entries written so far
+    int         gantt_capacity; // size of gantt buffer (MAX_GANTT_ENTRIES)
+
+    /* -- Simulation state ----------------------------------------- */
+    int current_time;           // clock at end of simulation
+    int total_time;             // = current_time when simulation ends
+    int idle_time;              // total ticks CPU spent idle
+    int context_switches;       // process→process switches only
+    int completed_processes;    // number of processes that finished
+    int boosts;                 // MLFQ priority boost count (0 for others)
+
+    /* -- Identity ------------------------------------------------- */
+    char algorithm[32];         // name string, set by main before dispatch
+} SchedulerState;
 
 // Non-preemptive ---------------------------------------------------
 int schedule_fcfs(SchedulerState *state);

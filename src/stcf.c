@@ -20,155 +20,109 @@
  * ------------------------------------------------------------------ */
 
 // Helpers ──────────────────────────────────────────────────────────
-// extend last Gantt entry if same PID, else append a new one
-static void gantt_append_or_extend(SchedulerState *state, int pid, int tick) {
-    // Coalesce: same PID as last entry, just push the end forward
+// gantt coalescing: extend last entry if same PID, else append new entry
+static void gantt_coalesce(SchedulerState *state, const char *pid, int tick) {
     if (state->gantt_count > 0) {
         GanttEntry *last = &state->gantt[state->gantt_count - 1];
-        if (last->pid == pid) {
-            last->end = tick + 1;
+        if (strcmp(last->pid, pid) == 0) {
+            last->end_time = tick + 1;
             return;
         }
     }
- 
-    // New entry needed (also handles the very first tick: gantt_count == 0)
-    if (state->gantt_count >= MAX_GANTT_ENTRIES) {
+    if (state->gantt_count >= state->gantt_capacity) {
         fprintf(stderr, "Warning: Gantt log full, entry dropped\n");
         return;
     }
-    state->gantt[state->gantt_count].pid   = pid;
-    state->gantt[state->gantt_count].start = tick;
-    state->gantt[state->gantt_count].end   = tick + 1;
-    state->gantt_count++;
+    GanttEntry *e = &state->gantt[state->gantt_count++];
+    snprintf(e->pid, sizeof(e->pid), "%s", pid);
+    e->start_time  = tick;
+    e->end_time    = tick + 1;
+    e->queue_level = -1;
 }
- 
+
 // pick process with shortest remaining_time among arrived, unfinished
 // Tiebreak: lower PID. Returns index into local[], or -1 if none ready
-static int pick_stcf(const Process local[], const int done[], int n,
-                     int current_time) {
+static int pick_stcf(const Process local[], const int done[], int n, int current_time) {
     int best = -1;
     for (int i = 0; i < n; i++) {
-        if (done[i])
-            continue;
-        if (local[i].arrival_time > current_time)
-            continue;
-        if (best == -1) {
-            best = i;
-            continue;
-        }
-        // Shorter remaining time wins
-        if (local[i].remaining_time < local[best].remaining_time) {
-            best = i;
-            continue;
-        }
-        // If tied: lower PID wins
+        if (done[i] || local[i].arrival_time > current_time) continue;
+        if (best == -1) { best = i; continue; }
+        if (local[i].remaining_time < local[best].remaining_time) { best = i; continue; }
         if (local[i].remaining_time == local[best].remaining_time &&
-            local[i].pid < local[best].pid) {
-            best = i;
-        }
+            local[i].pid < local[best].pid) best = i;
     }
     return best;
 }
- 
+
 // find the next arrival time among unfinished processes ------------ */
-static int next_arrival(const Process local[], const int done[], int n,
-                        int current_time) {
+static int next_arrival(const Process local[], const int done[], int n, int current_time) {
     int earliest = -1;
     for (int i = 0; i < n; i++) {
-        if (done[i])
-            continue;
-        if (local[i].arrival_time <= current_time)
-            continue;
+        if (done[i] || local[i].arrival_time <= current_time) continue;
         if (earliest == -1 || local[i].arrival_time < earliest)
             earliest = local[i].arrival_time;
     }
     return earliest;
 }
- 
-// print results table sorted by PID
-static void print_results(Process local[], int n) {
-    // Sort by PID for readable output
-    for (int i = 0; i < n - 1; i++)
-        for (int j = i + 1; j < n; j++)
-            if (local[j].pid < local[i].pid) {
-                Process tmp = local[i];
-                local[i]    = local[j];
-                local[j]    = tmp;
-            }
- 
-    printf("\n--- STCF Results ---\n");
-    printf("%-6s %-6s %-6s %-6s %-6s %-6s %-6s\n",
-           "PID", "AT", "BT", "FT", "TT", "WT", "RT");
-    printf("%-6s %-6s %-6s %-6s %-6s %-6s %-6s\n",
-           "---", "--", "--", "--", "--", "--", "--");
- 
-    double total_tt = 0, total_wt = 0, total_rt = 0;
-    for (int i = 0; i < n; i++) {
-        const Process *p = &local[i];
-        int rt = p->start_time - p->arrival_time;
-        printf("%-6d %-6d %-6d %-6d %-6d %-6d %-6d\n",
-               p->pid, p->arrival_time, p->burst_time,
-               p->finish_time, p->turnaround_time, p->waiting_time, rt);
-        total_tt += p->turnaround_time;
-        total_wt += p->waiting_time;
-        total_rt += rt;
-    }
- 
-    printf("\nAverage Turnaround Time : %.2f\n", total_tt / n);
-    printf("Average Waiting Time    : %.2f\n",   total_wt / n);
-    printf("Average Response Time   : %.2f\n",   total_rt / n);
-}
- 
+
 // schedule_stcf ────────────────────────────────────────────────────
 int schedule_stcf(SchedulerState *state) {
-    if (!state || state->n <= 0) {
+    if (!state || state->num_processes <= 0) {
         fprintf(stderr, "STCF Error: empty or null workload\n");
         return -1;
     }
- 
-    int n = state->n;
- 
+
+    int n = state->num_processes;
+
     // Local working copy
     Process local[MAX_PROCESSES];
     memcpy(local, state->processes, sizeof(Process) * (size_t)n);
- 
+
     int done[MAX_PROCESSES] = {0};
     int completed    = 0;
     int current_time = 0;
- 
+    char prev_pid[16] = "IDLE";
+
     while (completed < n) {
- 
         int idx = pick_stcf(local, done, n, current_time);
- 
+
         // Idle: no process has arrived yet
         if (idx == -1) {
             int jump = next_arrival(local, done, n, current_time);
-            if (jump == -1)         // if no more processes, should not happen
+            if (jump == -1) {
                 break;
-            gantt_append_or_extend(state, -1, current_time);
-            // advance tick by tick so coalescing works correctly
+            }
+            gantt_coalesce(state, "IDLE", current_time);
+            state->idle_time++;
             current_time++;
-            // if idle, jump remaining idle ticks in one step
             if (current_time < jump) {
-                // extend the idle entry directly to the jump point
-                state->gantt[state->gantt_count - 1].end = jump;
+                state->gantt[state->gantt_count - 1].end_time = jump;
+                state->idle_time += jump - current_time;
                 current_time = jump;
             }
+            snprintf(prev_pid, sizeof(prev_pid), "IDLE");
             continue;
         }
- 
+
         Process *p = &local[idx];
- 
+
+        // Context switch: process → process only
+        char cur_pid[16];
+        snprintf(cur_pid, sizeof(cur_pid), "%d", p->pid);
+        if (strcmp(prev_pid, "IDLE") != 0 && strcmp(prev_pid, cur_pid) != 0)
+            state->context_switches++;
+        snprintf(prev_pid, sizeof(prev_pid), "%s", cur_pid);
+
         // Record start_time on very first execution
         if (p->start_time == -1)
             p->start_time = current_time;
- 
-        // Run for 1 tick 
-        gantt_append_or_extend(state, p->pid, current_time);
+
+        // Run for 1 tick
+        gantt_coalesce(state, cur_pid, current_time);
         current_time++;
         p->remaining_time--;
- 
-        // Check completion 
+
+        // Check completion
         if (p->remaining_time == 0) {
             p->finish_time     = current_time;
             p->turnaround_time = p->finish_time - p->arrival_time;
@@ -177,10 +131,10 @@ int schedule_stcf(SchedulerState *state) {
             completed++;
         }
     }
- 
-    // Write computed metrics back to the caller's process array
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+
+    // Write computed metrics
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             if (state->processes[j].pid == local[i].pid) {
                 state->processes[j].start_time     = local[i].start_time;
                 state->processes[j].finish_time     = local[i].finish_time;
@@ -189,10 +143,9 @@ int schedule_stcf(SchedulerState *state) {
                 state->processes[j].remaining_time  = local[i].remaining_time;
                 break;
             }
-        }
-    }
- 
-    print_results(local, n);
+
+    state->total_time          = current_time;
+    state->completed_processes = n;
  
     return 0;
 }

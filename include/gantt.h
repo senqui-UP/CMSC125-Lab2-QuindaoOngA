@@ -3,19 +3,19 @@
 #ifndef GANTT_H
 #define GANTT_H
 
-#include "process.h"
-
-// One contiguous block of CPU time in the execution timeline
 typedef struct {
-    int pid;        // PID of running process, or -1 for idle
-    int start;      // Inclusive start time of this slot
-    int end;        // Exclusive end time of this slot
+    char pid[16];       // Process label e.g. "1", "12", or "IDLE"
+    int  start_time;
+    int  end_time;
+    int  queue_level;   // MLFQ queue level at time of execution; -1 = N/A
 } GanttEntry;
 
-// Maximum Gantt entries: upper bound for long/preemptive simulations
+// Upper bound for Gantt log
 #define MAX_GANTT_ENTRIES 4096
 
-// Renders a text-based Gantt chart from the completed process array
-void print_gantt(const GanttEntry *gantt, int count);
+// Render ASCII Gantt chart from the entries stored in SchedulerState.
+// forward-declared here to avoid circular include; implementation in src/gantt.c
+struct SchedulerState;
+void print_gantt_chart(struct SchedulerState *state);
 
 #endif /* GANTT_H */

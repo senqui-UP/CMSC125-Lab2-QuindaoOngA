@@ -9,7 +9,14 @@
 
 /* main.c ───────────────────────────────────────────────────────────
  * CLI entry point, argument parsing, scheduler dispatcher, and main loop
- * Supported algorithms (case-insensitive): FCFS, SJF, STCF, RR, MLFQ    */
+ * Supported algorithms (case-insensitive): FCFS, SJF, STCF, RR, MLFQ
+ * Flow:
+ *   parse_args()
+ *   load_processes()
+ *   build SchedulerState
+ *   dispatch → algorithm simulates, populates state
+ *   print_metrics_table(&state)   ← metrics.c
+ *   print_gantt_chart(&state)     ← gantt.c          */
 
 
 // Forward Declarations ─────────────────────────────────────────────
@@ -55,18 +62,30 @@ int main(int argc, char *argv[]) {
 
     // Build SchedulerState
     GanttEntry gantt[MAX_GANTT_ENTRIES];
+    memset(gantt, 0, sizeof(gantt));
 
-    SchedulerState state = {
-        .processes   = processes,
-        .n           = n,
-        .quantum     = quantum,
-        .gantt       = gantt,
-        .gantt_count = 0
-    };
-
-    // Dispatch to scheduler
     str_to_upper(algorithm);
+
+    SchedulerState state;
+    memset(&state, 0, sizeof(state));
+    state.processes      = processes;
+    state.num_processes  = n;
+    state.quantum        = quantum;
+    state.gantt          = gantt;
+    state.gantt_count    = 0;
+    state.gantt_capacity = MAX_GANTT_ENTRIES;
+    state.idle_time      = 0;
+    state.context_switches = 0;
+    state.boosts         = 0;
+    snprintf(state.algorithm, sizeof(state.algorithm), "%s", algorithm);
+
+    // Dispatch — algorithm simulates, populates state
     int result = dispatch(algorithm, &state);
+    if (result != 0) return EXIT_FAILURE;
+
+    // Output — centralized in metrics.c and gantt.c
+    print_metrics_table(&state);
+    print_gantt_chart(&state);
 
     return (result == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

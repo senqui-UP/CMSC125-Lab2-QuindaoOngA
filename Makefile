@@ -29,7 +29,7 @@ INCLUDES = -I include
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ -lm
 
 # Compile each src/*.c -> build/*.o
 $(BUILD_DIR)/%.o: src/%.c

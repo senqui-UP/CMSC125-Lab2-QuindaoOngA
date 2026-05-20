@@ -18,15 +18,17 @@
 
 // Helpers ──────────────────────────────────────────────────────────
 // append one entry to the Gantt log
-static void gantt_append(SchedulerState *state, int pid, int start, int end) {
-    if (state->gantt_count >= MAX_GANTT_ENTRIES) {
+static void gantt_append(SchedulerState *state, const char *pid,
+                         int start, int end) {
+    if (state->gantt_count >= state->gantt_capacity) {
         fprintf(stderr, "Warning: Gantt log full, entry dropped\n");
         return;
     }
-    state->gantt[state->gantt_count].pid   = pid;
-    state->gantt[state->gantt_count].start = start;
-    state->gantt[state->gantt_count].end   = end;
-    state->gantt_count++;
+    GanttEntry *e = &state->gantt[state->gantt_count++];
+    snprintf(e->pid, sizeof(e->pid), "%s", pid);
+    e->start_time  = start;
+    e->end_time    = end;
+    e->queue_level = -1;
 }
 
 // comparator for initial sort by arrival_time then PID
@@ -43,91 +45,41 @@ static int cmp_arrival(const void *a, const void *b) {
 static int pick_shortest(const Process local[], const int done[], int n,
                          int current_time) {
     int best = -1;
-
     for (int i = 0; i < n; i++) {
-        if (done[i])
-            continue;
-        if (local[i].arrival_time > current_time)
-            continue;
-
-        if (best == -1) {
-            best = i;
-            continue;
-        }
-
-        const Process *b = &local[best];
-        const Process *c = &local[i];
-
-        // Tie-break 1: shorter burst_time
-        if (c->burst_time < b->burst_time) {
-            best = i;
-            continue;
-        }
-        if (c->burst_time > b->burst_time)
-            continue;
-
-        // Tie-break 2: earlier arrival_time
-        if (c->arrival_time < b->arrival_time) {
-            best = i;
-            continue;
-        }
-        if (c->arrival_time > b->arrival_time)
-            continue;
-
-        // Tie-break 3: lower PID
-        if (c->pid < b->pid)
-            best = i;
+        if (done[i] || local[i].arrival_time > current_time) continue;
+        if (best == -1) { best = i; continue; }
+        const Process *b = &local[best], *c = &local[i];
+        if (c->burst_time < b->burst_time)                      { best = i; continue; }
+        if (c->burst_time > b->burst_time)                        continue;
+        if (c->arrival_time < b->arrival_time)                  { best = i; continue; }
+        if (c->arrival_time > b->arrival_time)                    continue;
+        if (c->pid < b->pid)                                      best = i;
     }
-
     return best;
 }
 
 // find the next arrival time among unfinished processes
 static int next_arrival(const Process local[], const int done[], int n,
-                        int current_time) {
+                        int current_time)
+{
     int earliest = -1;
     for (int i = 0; i < n; i++) {
-        if (done[i])
-            continue;
-        if (local[i].arrival_time <= current_time)
-            continue;
+        if (done[i] || local[i].arrival_time <= current_time) continue;
         if (earliest == -1 || local[i].arrival_time < earliest)
             earliest = local[i].arrival_time;
     }
     return earliest;
 }
 
-// print results table
-static void print_results(const Process *processes, int n) {
-    printf("\n--- SJF Results ---\n");
-    printf("%-6s %-6s %-6s %-6s %-6s %-6s\n",
-           "PID", "AT", "BT", "FT", "TT", "WT");
-    printf("%-6s %-6s %-6s %-6s %-6s %-6s\n",
-           "---", "--", "--", "--", "--", "--");
-
-    double total_tt = 0, total_wt = 0;
-    for (int i = 0; i < n; i++) {
-        const Process *p = &processes[i];
-        printf("%-6d %-6d %-6d %-6d %-6d %-6d\n",
-               p->pid, p->arrival_time, p->burst_time,
-               p->finish_time, p->turnaround_time, p->waiting_time);
-        total_tt += p->turnaround_time;
-        total_wt += p->waiting_time;
-    }
-
-    printf("\nAverage Turnaround Time : %.2f\n", total_tt / n);
-    printf("Average Waiting Time    : %.2f\n",   total_wt / n);
-}
-
 // schedule_sjf ─────────────────────────────────────────────────────
 int schedule_sjf(SchedulerState *state)
 {
-    if (!state || state->n <= 0) {
+    if (!state || state->num_processes <= 0) {
         fprintf(stderr, "SJF Error: empty or null workload\n");
         return -1;
     }
 
-    int n = state->n;
+    int n = state->num_processes;
 
     // Work on a local copy — sort by arrival so idle-jump logic is clean
     Process local[MAX_PROCESSES];
@@ -139,7 +91,6 @@ int schedule_sjf(SchedulerState *state)
     int current_time = 0;
 
     while (completed < n) {
-
         int idx = pick_shortest(local, done, n, current_time);
 
         // Idle gap: no process has arrived yet
@@ -147,7 +98,7 @@ int schedule_sjf(SchedulerState *state)
             int jump = next_arrival(local, done, n, current_time);
             if (jump == -1)             // if no more processes — should not happen
                 break;
-            gantt_append(state, -1, current_time, jump);
+            gantt_append(state, "IDLE", current_time, jump);
             current_time = jump;
             continue;
         }
@@ -158,21 +109,22 @@ int schedule_sjf(SchedulerState *state)
         p->start_time = current_time;
 
         // Run to completion (non-preemptive)
-        gantt_append(state, p->pid, current_time, current_time + p->burst_time);
+        char pidstr[16];
+        snprintf(pidstr, sizeof(pidstr), "%d", p->pid);
+        gantt_append(state, pidstr, current_time, current_time + p->burst_time);
         current_time += p->burst_time;
 
         // Record completion and compute metrics inline
         p->finish_time     = current_time;
         p->turnaround_time = p->finish_time - p->arrival_time;
         p->waiting_time    = p->turnaround_time - p->burst_time;
-
         done[idx] = 1;
         completed++;
     }
 
-    // Write computed metrics back to the caller's process array
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+    // Write computed metrics
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             if (state->processes[j].pid == local[i].pid) {
                 state->processes[j].start_time     = local[i].start_time;
                 state->processes[j].finish_time     = local[i].finish_time;
@@ -180,10 +132,10 @@ int schedule_sjf(SchedulerState *state)
                 state->processes[j].waiting_time    = local[i].waiting_time;
                 break;
             }
-        }
-    }
 
-    print_results(local, n);
+    state->total_time          = current_time;
+    state->completed_processes = n;
+    state->context_switches    = 0;
 
     return 0;
 }
