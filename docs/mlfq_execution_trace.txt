@@ -1,0 +1,576 @@
+--- MLFQ Execution Trace ---
+[t=0] RUN PA (Q0, remaining=240)
+[t=2] RUN PA (Q0, remaining=238)
+[t=4] DEMOTE PA Q0 → Q1
+[t=4] RUN PA (Q1, remaining=236)
+[t=8] RUN PA (Q1, remaining=232)
+[t=10] PREEMPT PA (Q1) → higher priority Q0 ready
+[t=10] RUN PB (Q0, remaining=180)
+[t=12] RUN PB (Q0, remaining=178)
+[t=14] DEMOTE PB Q0 → Q1
+[t=14] RUN PA (Q1, remaining=230)
+[t=16] DEMOTE PA Q1 → Q2
+[t=16] RUN PB (Q1, remaining=176)
+[t=20] PRIORITY BOOST — all processes → Q0
+[t=20] RUN PA (Q0, remaining=228)
+[t=22] RUN PB (Q0, remaining=172)
+[t=24] RUN PC (Q0, remaining=150)
+[t=26] RUN PA (Q0, remaining=226)
+[t=28] DEMOTE PA Q0 → Q1
+[t=28] RUN PB (Q0, remaining=170)
+[t=30] DEMOTE PB Q0 → Q1
+[t=30] RUN PD (Q0, remaining=80)
+[t=32] RUN PC (Q0, remaining=148)
+[t=34] DEMOTE PC Q0 → Q1
+[t=34] RUN PE (Q0, remaining=130)
+[t=36] RUN PD (Q0, remaining=78)
+[t=38] DEMOTE PD Q0 → Q1
+[t=38] RUN PE (Q0, remaining=128)
+[t=40] DEMOTE PE Q0 → Q1
+[t=40] PRIORITY BOOST — all processes → Q0
+[t=40] RUN PA (Q0, remaining=224)
+[t=42] RUN PB (Q0, remaining=168)
+[t=44] RUN PC (Q0, remaining=146)
+[t=46] RUN PD (Q0, remaining=76)
+[t=48] RUN PE (Q0, remaining=126)
+[t=50] RUN PA (Q0, remaining=222)
+[t=52] DEMOTE PA Q0 → Q1
+[t=52] RUN PB (Q0, remaining=166)
+[t=54] DEMOTE PB Q0 → Q1
+[t=54] RUN PC (Q0, remaining=144)
+[t=56] DEMOTE PC Q0 → Q1
+[t=56] RUN PD (Q0, remaining=74)
+[t=58] DEMOTE PD Q0 → Q1
+[t=58] RUN PE (Q0, remaining=124)
+[t=60] DEMOTE PE Q0 → Q1
+[t=60] PRIORITY BOOST — all processes → Q0
+[t=60] RUN PA (Q0, remaining=220)
+[t=62] RUN PB (Q0, remaining=164)
+[t=64] RUN PC (Q0, remaining=142)
+[t=66] RUN PD (Q0, remaining=72)
+[t=68] RUN PE (Q0, remaining=122)
+[t=70] RUN PA (Q0, remaining=218)
+[t=72] DEMOTE PA Q0 → Q1
+[t=72] RUN PB (Q0, remaining=162)
+[t=74] DEMOTE PB Q0 → Q1
+[t=74] RUN PC (Q0, remaining=140)
+[t=76] DEMOTE PC Q0 → Q1
+[t=76] RUN PD (Q0, remaining=70)
+[t=78] DEMOTE PD Q0 → Q1
+[t=78] RUN PE (Q0, remaining=120)
+[t=80] DEMOTE PE Q0 → Q1
+[t=80] PRIORITY BOOST — all processes → Q0
+[t=80] RUN PA (Q0, remaining=216)
+[t=82] RUN PB (Q0, remaining=160)
+[t=84] RUN PC (Q0, remaining=138)
+[t=86] RUN PD (Q0, remaining=68)
+[t=88] RUN PE (Q0, remaining=118)
+[t=90] RUN PA (Q0, remaining=214)
+[t=92] DEMOTE PA Q0 → Q1
+[t=92] RUN PB (Q0, remaining=158)
+[t=94] DEMOTE PB Q0 → Q1
+[t=94] RUN PC (Q0, remaining=136)
+[t=96] DEMOTE PC Q0 → Q1
+[t=96] RUN PD (Q0, remaining=66)
+[t=98] DEMOTE PD Q0 → Q1
+[t=98] RUN PE (Q0, remaining=116)
+[t=100] DEMOTE PE Q0 → Q1
+[t=100] PRIORITY BOOST — all processes → Q0
+[t=100] RUN PA (Q0, remaining=212)
+[t=102] RUN PB (Q0, remaining=156)
+[t=104] RUN PC (Q0, remaining=134)
+[t=106] RUN PD (Q0, remaining=64)
+[t=108] RUN PE (Q0, remaining=114)
+[t=110] RUN PA (Q0, remaining=210)
+[t=112] DEMOTE PA Q0 → Q1
+[t=112] RUN PB (Q0, remaining=154)
+[t=114] DEMOTE PB Q0 → Q1
+[t=114] RUN PC (Q0, remaining=132)
+[t=116] DEMOTE PC Q0 → Q1
+[t=116] RUN PD (Q0, remaining=62)
+[t=118] DEMOTE PD Q0 → Q1
+[t=118] RUN PE (Q0, remaining=112)
+[t=120] DEMOTE PE Q0 → Q1
+[t=120] PRIORITY BOOST — all processes → Q0
+[t=120] RUN PA (Q0, remaining=208)
+[t=122] RUN PB (Q0, remaining=152)
+[t=124] RUN PC (Q0, remaining=130)
+[t=126] RUN PD (Q0, remaining=60)
+[t=128] RUN PE (Q0, remaining=110)
+[t=130] RUN PA (Q0, remaining=206)
+[t=132] DEMOTE PA Q0 → Q1
+[t=132] RUN PB (Q0, remaining=150)
+[t=134] DEMOTE PB Q0 → Q1
+[t=134] RUN PC (Q0, remaining=128)
+[t=136] DEMOTE PC Q0 → Q1
+[t=136] RUN PD (Q0, remaining=58)
+[t=138] DEMOTE PD Q0 → Q1
+[t=138] RUN PE (Q0, remaining=108)
+[t=140] DEMOTE PE Q0 → Q1
+[t=140] PRIORITY BOOST — all processes → Q0
+[t=140] RUN PA (Q0, remaining=204)
+[t=142] RUN PB (Q0, remaining=148)
+[t=144] RUN PC (Q0, remaining=126)
+[t=146] RUN PD (Q0, remaining=56)
+[t=148] RUN PE (Q0, remaining=106)
+[t=150] RUN PA (Q0, remaining=202)
+[t=152] DEMOTE PA Q0 → Q1
+[t=152] RUN PB (Q0, remaining=146)
+[t=154] DEMOTE PB Q0 → Q1
+[t=154] RUN PC (Q0, remaining=124)
+[t=156] DEMOTE PC Q0 → Q1
+[t=156] RUN PD (Q0, remaining=54)
+[t=158] DEMOTE PD Q0 → Q1
+[t=158] RUN PE (Q0, remaining=104)
+[t=160] DEMOTE PE Q0 → Q1
+[t=160] PRIORITY BOOST — all processes → Q0
+[t=160] RUN PA (Q0, remaining=200)
+[t=162] RUN PB (Q0, remaining=144)
+[t=164] RUN PC (Q0, remaining=122)
+[t=166] RUN PD (Q0, remaining=52)
+[t=168] RUN PE (Q0, remaining=102)
+[t=170] RUN PA (Q0, remaining=198)
+[t=172] DEMOTE PA Q0 → Q1
+[t=172] RUN PB (Q0, remaining=142)
+[t=174] DEMOTE PB Q0 → Q1
+[t=174] RUN PC (Q0, remaining=120)
+[t=176] DEMOTE PC Q0 → Q1
+[t=176] RUN PD (Q0, remaining=50)
+[t=178] DEMOTE PD Q0 → Q1
+[t=178] RUN PE (Q0, remaining=100)
+[t=180] DEMOTE PE Q0 → Q1
+[t=180] PRIORITY BOOST — all processes → Q0
+[t=180] RUN PA (Q0, remaining=196)
+[t=182] RUN PB (Q0, remaining=140)
+[t=184] RUN PC (Q0, remaining=118)
+[t=186] RUN PD (Q0, remaining=48)
+[t=188] RUN PE (Q0, remaining=98)
+[t=190] RUN PA (Q0, remaining=194)
+[t=192] DEMOTE PA Q0 → Q1
+[t=192] RUN PB (Q0, remaining=138)
+[t=194] DEMOTE PB Q0 → Q1
+[t=194] RUN PC (Q0, remaining=116)
+[t=196] DEMOTE PC Q0 → Q1
+[t=196] RUN PD (Q0, remaining=46)
+[t=198] DEMOTE PD Q0 → Q1
+[t=198] RUN PE (Q0, remaining=96)
+[t=200] DEMOTE PE Q0 → Q1
+[t=200] PRIORITY BOOST — all processes → Q0
+[t=200] RUN PA (Q0, remaining=192)
+[t=202] RUN PB (Q0, remaining=136)
+[t=204] RUN PC (Q0, remaining=114)
+[t=206] RUN PD (Q0, remaining=44)
+[t=208] RUN PE (Q0, remaining=94)
+[t=210] RUN PA (Q0, remaining=190)
+[t=212] DEMOTE PA Q0 → Q1
+[t=212] RUN PB (Q0, remaining=134)
+[t=214] DEMOTE PB Q0 → Q1
+[t=214] RUN PC (Q0, remaining=112)
+[t=216] DEMOTE PC Q0 → Q1
+[t=216] RUN PD (Q0, remaining=42)
+[t=218] DEMOTE PD Q0 → Q1
+[t=218] RUN PE (Q0, remaining=92)
+[t=220] DEMOTE PE Q0 → Q1
+[t=220] PRIORITY BOOST — all processes → Q0
+[t=220] RUN PA (Q0, remaining=188)
+[t=222] RUN PB (Q0, remaining=132)
+[t=224] RUN PC (Q0, remaining=110)
+[t=226] RUN PD (Q0, remaining=40)
+[t=228] RUN PE (Q0, remaining=90)
+[t=230] RUN PA (Q0, remaining=186)
+[t=232] DEMOTE PA Q0 → Q1
+[t=232] RUN PB (Q0, remaining=130)
+[t=234] DEMOTE PB Q0 → Q1
+[t=234] RUN PC (Q0, remaining=108)
+[t=236] DEMOTE PC Q0 → Q1
+[t=236] RUN PD (Q0, remaining=38)
+[t=238] DEMOTE PD Q0 → Q1
+[t=238] RUN PE (Q0, remaining=88)
+[t=240] DEMOTE PE Q0 → Q1
+[t=240] PRIORITY BOOST — all processes → Q0
+[t=240] RUN PA (Q0, remaining=184)
+[t=242] RUN PB (Q0, remaining=128)
+[t=244] RUN PC (Q0, remaining=106)
+[t=246] RUN PD (Q0, remaining=36)
+[t=248] RUN PE (Q0, remaining=86)
+[t=250] RUN PA (Q0, remaining=182)
+[t=252] DEMOTE PA Q0 → Q1
+[t=252] RUN PB (Q0, remaining=126)
+[t=254] DEMOTE PB Q0 → Q1
+[t=254] RUN PC (Q0, remaining=104)
+[t=256] DEMOTE PC Q0 → Q1
+[t=256] RUN PD (Q0, remaining=34)
+[t=258] DEMOTE PD Q0 → Q1
+[t=258] RUN PE (Q0, remaining=84)
+[t=260] DEMOTE PE Q0 → Q1
+[t=260] PRIORITY BOOST — all processes → Q0
+[t=260] RUN PA (Q0, remaining=180)
+[t=262] RUN PB (Q0, remaining=124)
+[t=264] RUN PC (Q0, remaining=102)
+[t=266] RUN PD (Q0, remaining=32)
+[t=268] RUN PE (Q0, remaining=82)
+[t=270] RUN PA (Q0, remaining=178)
+[t=272] DEMOTE PA Q0 → Q1
+[t=272] RUN PB (Q0, remaining=122)
+[t=274] DEMOTE PB Q0 → Q1
+[t=274] RUN PC (Q0, remaining=100)
+[t=276] DEMOTE PC Q0 → Q1
+[t=276] RUN PD (Q0, remaining=30)
+[t=278] DEMOTE PD Q0 → Q1
+[t=278] RUN PE (Q0, remaining=80)
+[t=280] DEMOTE PE Q0 → Q1
+[t=280] PRIORITY BOOST — all processes → Q0
+[t=280] RUN PA (Q0, remaining=176)
+[t=282] RUN PB (Q0, remaining=120)
+[t=284] RUN PC (Q0, remaining=98)
+[t=286] RUN PD (Q0, remaining=28)
+[t=288] RUN PE (Q0, remaining=78)
+[t=290] RUN PA (Q0, remaining=174)
+[t=292] DEMOTE PA Q0 → Q1
+[t=292] RUN PB (Q0, remaining=118)
+[t=294] DEMOTE PB Q0 → Q1
+[t=294] RUN PC (Q0, remaining=96)
+[t=296] DEMOTE PC Q0 → Q1
+[t=296] RUN PD (Q0, remaining=26)
+[t=298] DEMOTE PD Q0 → Q1
+[t=298] RUN PE (Q0, remaining=76)
+[t=300] DEMOTE PE Q0 → Q1
+[t=300] PRIORITY BOOST — all processes → Q0
+[t=300] RUN PA (Q0, remaining=172)
+[t=302] RUN PB (Q0, remaining=116)
+[t=304] RUN PC (Q0, remaining=94)
+[t=306] RUN PD (Q0, remaining=24)
+[t=308] RUN PE (Q0, remaining=74)
+[t=310] RUN PA (Q0, remaining=170)
+[t=312] DEMOTE PA Q0 → Q1
+[t=312] RUN PB (Q0, remaining=114)
+[t=314] DEMOTE PB Q0 → Q1
+[t=314] RUN PC (Q0, remaining=92)
+[t=316] DEMOTE PC Q0 → Q1
+[t=316] RUN PD (Q0, remaining=22)
+[t=318] DEMOTE PD Q0 → Q1
+[t=318] RUN PE (Q0, remaining=72)
+[t=320] DEMOTE PE Q0 → Q1
+[t=320] PRIORITY BOOST — all processes → Q0
+[t=320] RUN PA (Q0, remaining=168)
+[t=322] RUN PB (Q0, remaining=112)
+[t=324] RUN PC (Q0, remaining=90)
+[t=326] RUN PD (Q0, remaining=20)
+[t=328] RUN PE (Q0, remaining=70)
+[t=330] RUN PA (Q0, remaining=166)
+[t=332] DEMOTE PA Q0 → Q1
+[t=332] RUN PB (Q0, remaining=110)
+[t=334] DEMOTE PB Q0 → Q1
+[t=334] RUN PC (Q0, remaining=88)
+[t=336] DEMOTE PC Q0 → Q1
+[t=336] RUN PD (Q0, remaining=18)
+[t=338] DEMOTE PD Q0 → Q1
+[t=338] RUN PE (Q0, remaining=68)
+[t=340] DEMOTE PE Q0 → Q1
+[t=340] PRIORITY BOOST — all processes → Q0
+[t=340] RUN PA (Q0, remaining=164)
+[t=342] RUN PB (Q0, remaining=108)
+[t=344] RUN PC (Q0, remaining=86)
+[t=346] RUN PD (Q0, remaining=16)
+[t=348] RUN PE (Q0, remaining=66)
+[t=350] RUN PA (Q0, remaining=162)
+[t=352] DEMOTE PA Q0 → Q1
+[t=352] RUN PB (Q0, remaining=106)
+[t=354] DEMOTE PB Q0 → Q1
+[t=354] RUN PC (Q0, remaining=84)
+[t=356] DEMOTE PC Q0 → Q1
+[t=356] RUN PD (Q0, remaining=14)
+[t=358] DEMOTE PD Q0 → Q1
+[t=358] RUN PE (Q0, remaining=64)
+[t=360] DEMOTE PE Q0 → Q1
+[t=360] PRIORITY BOOST — all processes → Q0
+[t=360] RUN PA (Q0, remaining=160)
+[t=362] RUN PB (Q0, remaining=104)
+[t=364] RUN PC (Q0, remaining=82)
+[t=366] RUN PD (Q0, remaining=12)
+[t=368] RUN PE (Q0, remaining=62)
+[t=370] RUN PA (Q0, remaining=158)
+[t=372] DEMOTE PA Q0 → Q1
+[t=372] RUN PB (Q0, remaining=102)
+[t=374] DEMOTE PB Q0 → Q1
+[t=374] RUN PC (Q0, remaining=80)
+[t=376] DEMOTE PC Q0 → Q1
+[t=376] RUN PD (Q0, remaining=10)
+[t=378] DEMOTE PD Q0 → Q1
+[t=378] RUN PE (Q0, remaining=60)
+[t=380] DEMOTE PE Q0 → Q1
+[t=380] PRIORITY BOOST — all processes → Q0
+[t=380] RUN PA (Q0, remaining=156)
+[t=382] RUN PB (Q0, remaining=100)
+[t=384] RUN PC (Q0, remaining=78)
+[t=386] RUN PD (Q0, remaining=8)
+[t=388] RUN PE (Q0, remaining=58)
+[t=390] RUN PA (Q0, remaining=154)
+[t=392] DEMOTE PA Q0 → Q1
+[t=392] RUN PB (Q0, remaining=98)
+[t=394] DEMOTE PB Q0 → Q1
+[t=394] RUN PC (Q0, remaining=76)
+[t=396] DEMOTE PC Q0 → Q1
+[t=396] RUN PD (Q0, remaining=6)
+[t=398] DEMOTE PD Q0 → Q1
+[t=398] RUN PE (Q0, remaining=56)
+[t=400] DEMOTE PE Q0 → Q1
+[t=400] PRIORITY BOOST — all processes → Q0
+[t=400] RUN PA (Q0, remaining=152)
+[t=402] RUN PB (Q0, remaining=96)
+[t=404] RUN PC (Q0, remaining=74)
+[t=406] RUN PD (Q0, remaining=4)
+[t=408] RUN PE (Q0, remaining=54)
+[t=410] RUN PA (Q0, remaining=150)
+[t=412] DEMOTE PA Q0 → Q1
+[t=412] RUN PB (Q0, remaining=94)
+[t=414] DEMOTE PB Q0 → Q1
+[t=414] RUN PC (Q0, remaining=72)
+[t=416] DEMOTE PC Q0 → Q1
+[t=416] RUN PD (Q0, remaining=2)
+[t=418] FINISH PD (Q0) FT=418 TT=393 WT=313
+[t=418] RUN PE (Q0, remaining=52)
+[t=420] DEMOTE PE Q0 → Q1
+[t=420] PRIORITY BOOST — all processes → Q0
+[t=420] RUN PA (Q0, remaining=148)
+[t=422] RUN PB (Q0, remaining=92)
+[t=424] RUN PC (Q0, remaining=70)
+[t=426] RUN PE (Q0, remaining=50)
+[t=428] RUN PA (Q0, remaining=146)
+[t=430] DEMOTE PA Q0 → Q1
+[t=430] RUN PB (Q0, remaining=90)
+[t=432] DEMOTE PB Q0 → Q1
+[t=432] RUN PC (Q0, remaining=68)
+[t=434] DEMOTE PC Q0 → Q1
+[t=434] RUN PE (Q0, remaining=48)
+[t=436] DEMOTE PE Q0 → Q1
+[t=436] RUN PA (Q1, remaining=144)
+[t=440] PRIORITY BOOST — all processes → Q0
+[t=440] RUN PA (Q0, remaining=140)
+[t=442] RUN PB (Q0, remaining=88)
+[t=444] RUN PC (Q0, remaining=66)
+[t=446] RUN PE (Q0, remaining=46)
+[t=448] RUN PA (Q0, remaining=138)
+[t=450] DEMOTE PA Q0 → Q1
+[t=450] RUN PB (Q0, remaining=86)
+[t=452] DEMOTE PB Q0 → Q1
+[t=452] RUN PC (Q0, remaining=64)
+[t=454] DEMOTE PC Q0 → Q1
+[t=454] RUN PE (Q0, remaining=44)
+[t=456] DEMOTE PE Q0 → Q1
+[t=456] RUN PA (Q1, remaining=136)
+[t=460] PRIORITY BOOST — all processes → Q0
+[t=460] RUN PA (Q0, remaining=132)
+[t=462] RUN PB (Q0, remaining=84)
+[t=464] RUN PC (Q0, remaining=62)
+[t=466] RUN PE (Q0, remaining=42)
+[t=468] RUN PA (Q0, remaining=130)
+[t=470] DEMOTE PA Q0 → Q1
+[t=470] RUN PB (Q0, remaining=82)
+[t=472] DEMOTE PB Q0 → Q1
+[t=472] RUN PC (Q0, remaining=60)
+[t=474] DEMOTE PC Q0 → Q1
+[t=474] RUN PE (Q0, remaining=40)
+[t=476] DEMOTE PE Q0 → Q1
+[t=476] RUN PA (Q1, remaining=128)
+[t=480] PRIORITY BOOST — all processes → Q0
+[t=480] RUN PA (Q0, remaining=124)
+[t=482] RUN PB (Q0, remaining=80)
+[t=484] RUN PC (Q0, remaining=58)
+[t=486] RUN PE (Q0, remaining=38)
+[t=488] RUN PA (Q0, remaining=122)
+[t=490] DEMOTE PA Q0 → Q1
+[t=490] RUN PB (Q0, remaining=78)
+[t=492] DEMOTE PB Q0 → Q1
+[t=492] RUN PC (Q0, remaining=56)
+[t=494] DEMOTE PC Q0 → Q1
+[t=494] RUN PE (Q0, remaining=36)
+[t=496] DEMOTE PE Q0 → Q1
+[t=496] RUN PA (Q1, remaining=120)
+[t=500] PRIORITY BOOST — all processes → Q0
+[t=500] RUN PA (Q0, remaining=116)
+[t=502] RUN PB (Q0, remaining=76)
+[t=504] RUN PC (Q0, remaining=54)
+[t=506] RUN PE (Q0, remaining=34)
+[t=508] RUN PA (Q0, remaining=114)
+[t=510] DEMOTE PA Q0 → Q1
+[t=510] RUN PB (Q0, remaining=74)
+[t=512] DEMOTE PB Q0 → Q1
+[t=512] RUN PC (Q0, remaining=52)
+[t=514] DEMOTE PC Q0 → Q1
+[t=514] RUN PE (Q0, remaining=32)
+[t=516] DEMOTE PE Q0 → Q1
+[t=516] RUN PA (Q1, remaining=112)
+[t=520] PRIORITY BOOST — all processes → Q0
+[t=520] RUN PA (Q0, remaining=108)
+[t=522] RUN PB (Q0, remaining=72)
+[t=524] RUN PC (Q0, remaining=50)
+[t=526] RUN PE (Q0, remaining=30)
+[t=528] RUN PA (Q0, remaining=106)
+[t=530] DEMOTE PA Q0 → Q1
+[t=530] RUN PB (Q0, remaining=70)
+[t=532] DEMOTE PB Q0 → Q1
+[t=532] RUN PC (Q0, remaining=48)
+[t=534] DEMOTE PC Q0 → Q1
+[t=534] RUN PE (Q0, remaining=28)
+[t=536] DEMOTE PE Q0 → Q1
+[t=536] RUN PA (Q1, remaining=104)
+[t=540] PRIORITY BOOST — all processes → Q0
+[t=540] RUN PA (Q0, remaining=100)
+[t=542] RUN PB (Q0, remaining=68)
+[t=544] RUN PC (Q0, remaining=46)
+[t=546] RUN PE (Q0, remaining=26)
+[t=548] RUN PA (Q0, remaining=98)
+[t=550] DEMOTE PA Q0 → Q1
+[t=550] RUN PB (Q0, remaining=66)
+[t=552] DEMOTE PB Q0 → Q1
+[t=552] RUN PC (Q0, remaining=44)
+[t=554] DEMOTE PC Q0 → Q1
+[t=554] RUN PE (Q0, remaining=24)
+[t=556] DEMOTE PE Q0 → Q1
+[t=556] RUN PA (Q1, remaining=96)
+[t=560] PRIORITY BOOST — all processes → Q0
+[t=560] RUN PA (Q0, remaining=92)
+[t=562] RUN PB (Q0, remaining=64)
+[t=564] RUN PC (Q0, remaining=42)
+[t=566] RUN PE (Q0, remaining=22)
+[t=568] RUN PA (Q0, remaining=90)
+[t=570] DEMOTE PA Q0 → Q1
+[t=570] RUN PB (Q0, remaining=62)
+[t=572] DEMOTE PB Q0 → Q1
+[t=572] RUN PC (Q0, remaining=40)
+[t=574] DEMOTE PC Q0 → Q1
+[t=574] RUN PE (Q0, remaining=20)
+[t=576] DEMOTE PE Q0 → Q1
+[t=576] RUN PA (Q1, remaining=88)
+[t=580] PRIORITY BOOST — all processes → Q0
+[t=580] RUN PA (Q0, remaining=84)
+[t=582] RUN PB (Q0, remaining=60)
+[t=584] RUN PC (Q0, remaining=38)
+[t=586] RUN PE (Q0, remaining=18)
+[t=588] RUN PA (Q0, remaining=82)
+[t=590] DEMOTE PA Q0 → Q1
+[t=590] RUN PB (Q0, remaining=58)
+[t=592] DEMOTE PB Q0 → Q1
+[t=592] RUN PC (Q0, remaining=36)
+[t=594] DEMOTE PC Q0 → Q1
+[t=594] RUN PE (Q0, remaining=16)
+[t=596] DEMOTE PE Q0 → Q1
+[t=596] RUN PA (Q1, remaining=80)
+[t=600] PRIORITY BOOST — all processes → Q0
+[t=600] RUN PA (Q0, remaining=76)
+[t=602] RUN PB (Q0, remaining=56)
+[t=604] RUN PC (Q0, remaining=34)
+[t=606] RUN PE (Q0, remaining=14)
+[t=608] RUN PA (Q0, remaining=74)
+[t=610] DEMOTE PA Q0 → Q1
+[t=610] RUN PB (Q0, remaining=54)
+[t=612] DEMOTE PB Q0 → Q1
+[t=612] RUN PC (Q0, remaining=32)
+[t=614] DEMOTE PC Q0 → Q1
+[t=614] RUN PE (Q0, remaining=12)
+[t=616] DEMOTE PE Q0 → Q1
+[t=616] RUN PA (Q1, remaining=72)
+[t=620] PRIORITY BOOST — all processes → Q0
+[t=620] RUN PA (Q0, remaining=68)
+[t=622] RUN PB (Q0, remaining=52)
+[t=624] RUN PC (Q0, remaining=30)
+[t=626] RUN PE (Q0, remaining=10)
+[t=628] RUN PA (Q0, remaining=66)
+[t=630] DEMOTE PA Q0 → Q1
+[t=630] RUN PB (Q0, remaining=50)
+[t=632] DEMOTE PB Q0 → Q1
+[t=632] RUN PC (Q0, remaining=28)
+[t=634] DEMOTE PC Q0 → Q1
+[t=634] RUN PE (Q0, remaining=8)
+[t=636] DEMOTE PE Q0 → Q1
+[t=636] RUN PA (Q1, remaining=64)
+[t=640] PRIORITY BOOST — all processes → Q0
+[t=640] RUN PA (Q0, remaining=60)
+[t=642] RUN PB (Q0, remaining=48)
+[t=644] RUN PC (Q0, remaining=26)
+[t=646] RUN PE (Q0, remaining=6)
+[t=648] RUN PA (Q0, remaining=58)
+[t=650] DEMOTE PA Q0 → Q1
+[t=650] RUN PB (Q0, remaining=46)
+[t=652] DEMOTE PB Q0 → Q1
+[t=652] RUN PC (Q0, remaining=24)
+[t=654] DEMOTE PC Q0 → Q1
+[t=654] RUN PE (Q0, remaining=4)
+[t=656] DEMOTE PE Q0 → Q1
+[t=656] RUN PA (Q1, remaining=56)
+[t=660] PRIORITY BOOST — all processes → Q0
+[t=660] RUN PA (Q0, remaining=52)
+[t=662] RUN PB (Q0, remaining=44)
+[t=664] RUN PC (Q0, remaining=22)
+[t=666] RUN PE (Q0, remaining=2)
+[t=668] FINISH PE (Q0) FT=668 TT=638 WT=508
+[t=668] RUN PA (Q0, remaining=50)
+[t=670] DEMOTE PA Q0 → Q1
+[t=670] RUN PB (Q0, remaining=42)
+[t=672] DEMOTE PB Q0 → Q1
+[t=672] RUN PC (Q0, remaining=20)
+[t=674] DEMOTE PC Q0 → Q1
+[t=674] RUN PA (Q1, remaining=48)
+[t=678] RUN PB (Q1, remaining=40)
+[t=680] PRIORITY BOOST — all processes → Q0
+[t=682] RUN PA (Q0, remaining=44)
+[t=684] RUN PC (Q0, remaining=18)
+[t=686] RUN PB (Q0, remaining=36)
+[t=688] DEMOTE PB Q0 → Q1
+[t=688] RUN PA (Q0, remaining=42)
+[t=690] DEMOTE PA Q0 → Q1
+[t=690] RUN PC (Q0, remaining=16)
+[t=692] DEMOTE PC Q0 → Q1
+[t=692] RUN PB (Q1, remaining=34)
+[t=696] RUN PA (Q1, remaining=40)
+[t=700] PRIORITY BOOST — all processes → Q0
+[t=700] RUN PA (Q0, remaining=36)
+[t=702] RUN PB (Q0, remaining=30)
+[t=704] RUN PC (Q0, remaining=14)
+[t=706] RUN PA (Q0, remaining=34)
+[t=708] DEMOTE PA Q0 → Q1
+[t=708] RUN PB (Q0, remaining=28)
+[t=710] DEMOTE PB Q0 → Q1
+[t=710] RUN PC (Q0, remaining=12)
+[t=712] DEMOTE PC Q0 → Q1
+[t=712] RUN PA (Q1, remaining=32)
+[t=716] RUN PB (Q1, remaining=26)
+[t=720] PRIORITY BOOST — all processes → Q0
+[t=720] RUN PA (Q0, remaining=28)
+[t=722] RUN PB (Q0, remaining=22)
+[t=724] RUN PC (Q0, remaining=10)
+[t=726] RUN PA (Q0, remaining=26)
+[t=728] DEMOTE PA Q0 → Q1
+[t=728] RUN PB (Q0, remaining=20)
+[t=730] DEMOTE PB Q0 → Q1
+[t=730] RUN PC (Q0, remaining=8)
+[t=732] DEMOTE PC Q0 → Q1
+[t=732] RUN PA (Q1, remaining=24)
+[t=736] RUN PB (Q1, remaining=18)
+[t=740] PRIORITY BOOST — all processes → Q0
+[t=740] RUN PA (Q0, remaining=20)
+[t=742] RUN PB (Q0, remaining=14)
+[t=744] RUN PC (Q0, remaining=6)
+[t=746] RUN PA (Q0, remaining=18)
+[t=748] DEMOTE PA Q0 → Q1
+[t=748] RUN PB (Q0, remaining=12)
+[t=750] DEMOTE PB Q0 → Q1
+[t=750] RUN PC (Q0, remaining=4)
+[t=752] DEMOTE PC Q0 → Q1
+[t=752] RUN PA (Q1, remaining=16)
+[t=756] RUN PB (Q1, remaining=10)
+[t=760] PRIORITY BOOST — all processes → Q0
+[t=760] RUN PA (Q0, remaining=12)
+[t=762] RUN PB (Q0, remaining=6)
+[t=764] RUN PC (Q0, remaining=2)
+[t=766] FINISH PC (Q0) FT=766 TT=746 WT=596
+[t=766] RUN PA (Q0, remaining=10)
+[t=768] DEMOTE PA Q0 → Q1
+[t=768] RUN PB (Q0, remaining=4)
+[t=770] DEMOTE PB Q0 → Q1
+[t=770] RUN PA (Q1, remaining=8)
+[t=774] RUN PB (Q1, remaining=2)
+[t=776] FINISH PB (Q1) FT=776 TT=766 WT=586
+[t=776] RUN PA (Q1, remaining=4)
+[t=780] FINISH PA (Q1) FT=780 TT=780 WT=540
