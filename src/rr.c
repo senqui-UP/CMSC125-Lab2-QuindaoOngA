@@ -54,8 +54,7 @@ static int queue_dequeue(ReadyQueue *q) {
  
 // Helpers ──────────────────────────────────────────────────────────
 // append a new Gantt entry
-static void gantt_append(SchedulerState *state, int pid, int start, int end)
-{
+static void gantt_append(SchedulerState *state, int pid, int start, int end) {
     if (state->gantt_count >= MAX_GANTT_ENTRIES) {
         fprintf(stderr, "Warning: Gantt log full, entry dropped\n");
         return;
@@ -68,8 +67,7 @@ static void gantt_append(SchedulerState *state, int pid, int start, int end)
  
 // enqueue all processes that have arrived by time (in PID order) that have not yet been enqueued. Uses enqueued[] for tracking
 static void enqueue_arrivals(ReadyQueue *q, Process local[], int enqueued[],
-                             int n, int time)
-{
+                             int n, int time) {
     // Simple insertion: find the lowest-PID unqueued arrival <= time
     // Repeat until no more candidates — preserves PID order regardless of the order processes appear in local[]
     int added = 1;
@@ -94,8 +92,7 @@ static void enqueue_arrivals(ReadyQueue *q, Process local[], int enqueued[],
  
 // find the next arrival time among un-enqueued processes
 static int next_arrival(const Process local[], const int enqueued[], int n,
-                        int current_time)
-{
+                        int current_time) {
     int earliest = -1;
     for (int i = 0; i < n; i++) {
         if (enqueued[i])
@@ -109,8 +106,7 @@ static int next_arrival(const Process local[], const int enqueued[], int n,
 }
  
 // print results table
-static void print_results(Process local[], int n, int context_switches)
-{
+static void print_results(Process local[], int n, int context_switches) {
     // sort by PID
     for (int i = 0; i < n - 1; i++)
         for (int j = i + 1; j < n; j++)
@@ -145,8 +141,7 @@ static void print_results(Process local[], int n, int context_switches)
 }
  
 // schedule_rr ──────────────────────────────────────────────────────
-int schedule_rr(SchedulerState *state)
-{
+int schedule_rr(SchedulerState *state) {
     if (!state || state->n <= 0) {
         fprintf(stderr, "RR Error: empty or null workload\n");
         return -1;
