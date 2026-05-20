@@ -1,6 +1,7 @@
 //Round Robin Implementation
 #include <stdio.h>
-#include "../include/process.h"
+#include <stdlib.h>
+#include <string.h>
 #include "../include/scheduler.h"
 
 int schedule_rr(SchedulerState *state) {
