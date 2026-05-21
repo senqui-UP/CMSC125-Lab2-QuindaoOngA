@@ -1,0 +1,69 @@
+=== workload1.txt — metric correctness ===
+[PASS] FCFS  workload1  TT=515.00 WT=359.00 (TT=515.00 WT=359.00)
+[PASS] SJF   workload1  TT=461.00 WT=305.00 (TT=461.00 WT=305.00)
+[PASS] STCF  workload1  TT=393.00 WT=237.00 (TT=393.00 WT=237.00)
+[PASS] RR    workload1  q=2  TT=630.20 WT=474.20 (TT=630.20 WT=474.20)
+[PASS] MLFQ  workload1  TT=664.60 WT=508.60 (TT=664.60 WT=508.60)
+
+=== workload2.txt — idle gap handling ===
+[PASS] FCFS  workload2  TT=4.50 WT=0.75 (TT=4.50 WT=0.75)
+[PASS] SJF   workload2  TT=4.50 WT=0.75 (TT=4.50 WT=0.75)
+[PASS] STCF  workload2  TT=4.25 WT=0.50 (TT=4.25 WT=0.50)
+[PASS] RR    workload2  q=2  TT=4.50 WT=0.75 (TT=4.50 WT=0.75)
+[PASS] MLFQ  workload2  TT=4.50 WT=0.75 (TT=4.50 WT=0.75)
+
+=== single.txt — single-process edge case ===
+[PASS] FCFS  single  TT=10.00 WT=0.00 (TT=10.00 WT=0.00)
+[PASS] SJF   single  TT=10.00 WT=0.00 (TT=10.00 WT=0.00)
+[PASS] STCF  single  TT=10.00 WT=0.00 (TT=10.00 WT=0.00)
+[PASS] RR    single  q=2  TT=10.00 WT=0.00 (TT=10.00 WT=0.00)
+[PASS] MLFQ  single  TT=10.00 WT=0.00 (TT=10.00 WT=0.00)
+
+=== simultaneous.txt — all arrive at t=0 ===
+[PASS] FCFS  simultaneous  TT=15.80 WT=10.80 (TT=15.80 WT=10.80)
+[PASS] SJF   simultaneous  TT=12.20 WT=7.20 (TT=12.20 WT=7.20)
+[PASS] STCF  simultaneous  TT=12.20 WT=7.20 (TT=12.20 WT=7.20)
+[PASS] RR    simultaneous  q=2  TT=18.00 WT=13.00 (TT=18.00 WT=13.00)
+[PASS] MLFQ  simultaneous  TT=18.00 WT=13.00 (TT=18.00 WT=13.00)
+
+=== staircase.txt — no overlap no idle gaps ===
+[PASS] FCFS  staircase  TT=5.60 WT=0.00 (TT=5.60 WT=0.00)
+[PASS] SJF   staircase  TT=5.60 WT=0.00 (TT=5.60 WT=0.00)
+[PASS] STCF  staircase  TT=5.60 WT=0.00 (TT=5.60 WT=0.00)
+[PASS] RR    staircase  q=2  TT=5.60 WT=0.00 (TT=5.60 WT=0.00)
+[PASS] MLFQ  staircase  TT=5.60 WT=0.00 (TT=5.60 WT=0.00)
+
+=== identical_burst.txt — identical burst times ===
+[PASS] FCFS  identical_burst  TT=22.80 WT=12.80 (TT=22.80 WT=12.80)
+[PASS] SJF   identical_burst  TT=22.80 WT=12.80 (TT=22.80 WT=12.80)
+[PASS] STCF  identical_burst  TT=22.80 WT=12.80 (TT=22.80 WT=12.80)
+[PASS] RR    identical_burst  q=2  TT=32.40 WT=22.40 (TT=32.40 WT=22.40)
+[PASS] MLFQ  identical_burst  TT=38.80 WT=28.80 (TT=38.80 WT=28.80)
+
+=== --compare mode (no crash) ===
+[PASS] compare workload1 q=2
+[PASS] compare workload1 q=4
+[PASS] compare workload2
+[PASS] compare single
+[PASS] compare simultaneous
+[PASS] compare staircase
+[PASS] compare identical_burst
+
+=== error paths ===
+[PASS] missing --input
+[PASS] missing --algorithm
+[PASS] unknown algorithm
+[PASS] RR zero quantum
+[PASS] RR negative quantum
+[PASS] nonexistent input file
+
+=== stress test — 100 processes ===
+[PASS] FCFS  stress
+[PASS] SJF   stress
+[PASS] STCF  stress
+[PASS] RR    stress  q=2
+[PASS] RR    stress  q=5
+[PASS] MLFQ  stress
+[PASS] compare stress
+
+Results: 50/50 passed, 0 failed

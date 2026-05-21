@@ -1,5 +1,7 @@
 # CPU Scheduling
-## CMSC 125-1 Lab-1 Laboratory 2 | Quindao, Hansen Maeve C.
+## CMSC 125-1 Lab-1 Laboratory 2 
+
+Authors: Ong, Andy DOminic X. & Quindao, Hansen Maeve C.    
 
 A command-line CPU scheduling simulator written in C implementing FCFS, SJF, STCF, Round Robin, and Multi-Level Feedback Queue (MLFQ) algorithms with metrics reporting, Gantt visualization, and comparison mode.
 
@@ -128,5 +130,4 @@ The simulator is verified using a Bash-based test suite that ensures mathematica
 ![Comparison](docs/comparison.png "Comparison Analysis")
 
 ### Test_Suite
-![test1](docs/test1.png "Test1")
-![test2](docs/test2.png "Test2")
+See test_trace.txt in /docs
