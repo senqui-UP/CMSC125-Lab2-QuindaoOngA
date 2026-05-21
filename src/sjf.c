@@ -4,33 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/scheduler.h"
-
+#include "../include/utils.h"
 
 /* ------------------------------------------------------------------
  * Algorithm:
- *   1. At each CPU selection point, scan all processes that have arrived and not yet completed
- *   2. Pick process with smallest burst_time and run until completion
- *   3. For ties: smallest burst_time > earliest arrival time > lowest PID
- *   4.If no process has arrived yet, jump the clock to the next arrival and insert an IDLE Gantt entry
- * 
+ *   1. At each CPU selection point, scan all processes that have arrived
+ *      and not yet completed.
+ *   2. Pick the process with the smallest burst_time and run to completion.
+ *   3. Ties: smallest burst_time → earliest arrival_time → lowest PID.
+ *   4. If no process has arrived yet, jump the clock to the next arrival
+ *      and insert an IDLE Gantt entry.
+ *
  * Complexity: O(n^2)
  * ------------------------------------------------------------------ */
 
-// Helpers ──────────────────────────────────────────────────────────
-// append one entry to the Gantt log
-static void gantt_append(SchedulerState *state, const char *pid,
-                         int start, int end) {
-    if (state->gantt_count >= state->gantt_capacity) {
-        fprintf(stderr, "Warning: Gantt log full, entry dropped\n");
-        return;
-    }
-    GanttEntry *e = &state->gantt[state->gantt_count++];
-    snprintf(e->pid, sizeof(e->pid), "%s", pid);
-    e->start_time  = start;
-    e->end_time    = end;
-    e->queue_level = -1;
-}
- 
 // comparator for initial sort by arrival_time then PID
 static int cmp_arrival(const void *a, const void *b) {
     const Process *pa = (const Process *)a;
@@ -39,9 +26,9 @@ static int cmp_arrival(const void *a, const void *b) {
         return pa->arrival_time - pb->arrival_time;
     return strcmp(pa->pid, pb->pid);
 }
- 
+
 // pick the best candidate from arrived, unfinished processes.
-// Returns index into local[] of the chosen process, or -1 if none are ready
+// Returns index into local[] of the chosen process, or -1 if none ready.
 static int pick_shortest(const Process local[], const int done[], int n,
                          int current_time) {
     int best = -1;
@@ -49,19 +36,18 @@ static int pick_shortest(const Process local[], const int done[], int n,
         if (done[i] || local[i].arrival_time > current_time) continue;
         if (best == -1) { best = i; continue; }
         const Process *b = &local[best], *c = &local[i];
-        if (c->burst_time < b->burst_time)                      { best = i; continue; }
-        if (c->burst_time > b->burst_time)                        continue;
-        if (c->arrival_time < b->arrival_time)                  { best = i; continue; }
-        if (c->arrival_time > b->arrival_time)                    continue;
-        if (strcmp(c->pid, b->pid) < 0)                           best = i;
+        if (c->burst_time < b->burst_time)             { best = i; continue; }
+        if (c->burst_time > b->burst_time)               continue;
+        if (c->arrival_time < b->arrival_time)         { best = i; continue; }
+        if (c->arrival_time > b->arrival_time)           continue;
+        if (strcmp(c->pid, b->pid) < 0)                  best = i;
     }
     return best;
 }
- 
-// find the next arrival time among unfinished processes 
+
+// find the next arrival time among unfinished processes
 static int next_arrival(const Process local[], const int done[], int n,
-                        int current_time)
-{
+                        int current_time) {
     int earliest = -1;
     for (int i = 0; i < n; i++) {
         if (done[i] || local[i].arrival_time <= current_time) continue;
@@ -72,55 +58,54 @@ static int next_arrival(const Process local[], const int done[], int n,
 }
 
 // schedule_sjf ─────────────────────────────────────────────────────
-int schedule_sjf(SchedulerState *state)
-{
+int schedule_sjf(SchedulerState *state) {
     if (!state || state->num_processes <= 0) {
         fprintf(stderr, "SJF Error: empty or null workload\n");
         return -1;
     }
 
     int n = state->num_processes;
- 
+
     // Work on a local copy — sort by arrival so idle-jump logic is clean
     Process local[MAX_PROCESSES];
     memcpy(local, state->processes, sizeof(Process) * (size_t)n);
     qsort(local, (size_t)n, sizeof(Process), cmp_arrival);
- 
-    int done[MAX_PROCESSES] = {0};      // tracks which processes have completed
+
+    int done[MAX_PROCESSES] = {0};
     int completed    = 0;
     int current_time = 0;
- 
+
     while (completed < n) {
         int idx = pick_shortest(local, done, n, current_time);
- 
+
         // Idle gap: no process has arrived yet
         if (idx == -1) {
             int jump = next_arrival(local, done, n, current_time);
-            if (jump == -1)             // if no more processes — should not happen
-                break;                  
+            if (jump == -1) break;      // should not happen
             gantt_append(state, "IDLE", current_time, jump);
+            state->idle_time += jump - current_time;
             current_time = jump;
             continue;
         }
- 
+
         Process *p = &local[idx];
- 
-        // At first execution: record start_time 
+
+        // First execution: record start_time
         p->start_time = current_time;
- 
+
         // Run to completion (non-preemptive)
         gantt_append(state, p->pid, current_time, current_time + p->burst_time);
         current_time += p->burst_time;
- 
-        // Record completion and compute metrics inline 
+
+        // Record completion and compute metrics inline
         p->finish_time     = current_time;
         p->turnaround_time = p->finish_time - p->arrival_time;
         p->waiting_time    = p->turnaround_time - p->burst_time;
         done[idx] = 1;
         completed++;
     }
- 
-    // Write computed metrics
+
+    // Write computed metrics back to the caller's process array
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
             if (strcmp(state->processes[j].pid, local[i].pid) == 0) {
@@ -130,10 +115,10 @@ int schedule_sjf(SchedulerState *state)
                 state->processes[j].waiting_time    = local[i].waiting_time;
                 break;
             }
- 
+
     state->total_time          = current_time;
     state->completed_processes = n;
     state->context_switches    = 0;
- 
+
     return 0;
 }
