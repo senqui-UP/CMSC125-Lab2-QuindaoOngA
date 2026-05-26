@@ -68,12 +68,28 @@ static void mq_init(MLFQQueue *q)    { q->head = q->tail = q->count = 0; }
 static int  mq_empty(const MLFQQueue *q) { return q->count == 0; }
 
 static void mq_enqueue(MLFQQueue *q, int idx) {
+	// Prevent circular queue overflow
+    if (q->count >= MLFQ_QUEUE_SIZE) {
+        fprintf(stderr,
+                "RR Error: ready queue overflow "
+                "(QUEUE_SIZE=%d)\n",
+                MLFQ_QUEUE_SIZE);
+        exit(EXIT_FAILURE);
+    }
     q->data[q->tail] = idx;
     q->tail          = (q->tail + 1) % MLFQ_QUEUE_SIZE;
     q->count++;
 }
 
 static int mq_dequeue(MLFQQueue *q) {
+	// Prevent circular queue overflow
+    if (q->count >= MLFQ_QUEUE_SIZE) {
+        fprintf(stderr,
+                "RR Error: ready queue overflow "
+                "(QUEUE_SIZE=%d)\n",
+                MLFQ_QUEUE_SIZE);
+        exit(EXIT_FAILURE);
+    }
     int idx = q->data[q->head];
     q->head = (q->head + 1) % MLFQ_QUEUE_SIZE;
     q->count--;
@@ -103,17 +119,6 @@ static void enqueue_arrivals(MLFQQueue queues[], int enqueued[],
     }
 }
 
-// Next arrival time among processes not yet enqueued, or -1 if none
-static int next_arrival_time(const Process local[], const int enqueued[],
-                             int n, int current_time) {
-    int earliest = -1;
-    for (int i = 0; i < n; i++) {
-        if (enqueued[i] || local[i].arrival_time <= current_time) continue;
-        if (earliest == -1 || local[i].arrival_time < earliest)
-            earliest = local[i].arrival_time;
-    }
-    return earliest;
-}
 
 // Boost all unfinished processes to Q0, reset counters
 static void do_boost(MLFQQueue queues[], Process local[], int done[],

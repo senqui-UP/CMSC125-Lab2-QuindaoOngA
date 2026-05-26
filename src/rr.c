@@ -44,12 +44,28 @@ static int queue_empty(const ReadyQueue *q) {
 }
 
 static void queue_enqueue(ReadyQueue *q, int idx) {
+	// Prevent circular queue overflow
+    if (q->count >= QUEUE_SIZE) {
+        fprintf(stderr,
+                "RR Error: ready queue overflow "
+                "(QUEUE_SIZE=%d)\n",
+                QUEUE_SIZE);
+        exit(EXIT_FAILURE);
+    }
     q->data[q->tail] = idx;
     q->tail          = (q->tail + 1) % QUEUE_SIZE;
     q->count++;
 }
 
 static int queue_dequeue(ReadyQueue *q) {
+	// Prevent circular queue overflow
+    if (q->count >= QUEUE_SIZE) {
+        fprintf(stderr,
+                "RR Error: ready queue overflow "
+                "(QUEUE_SIZE=%d)\n",
+                QUEUE_SIZE);
+        exit(EXIT_FAILURE);
+    }
     int idx = q->data[q->head];
     q->head = (q->head + 1) % QUEUE_SIZE;
     q->count--;
@@ -75,18 +91,6 @@ static void enqueue_arrivals(ReadyQueue *q, Process local[], int enqueued[],
             added          = 1;
         }
     }
-}
-
-// Find the next arrival time among un-enqueued processes.
-static int next_arrival(const Process local[], const int enqueued[], int n,
-                        int current_time) {
-    int earliest = -1;
-    for (int i = 0; i < n; i++) {
-        if (enqueued[i] || local[i].arrival_time <= current_time) continue;
-        if (earliest == -1 || local[i].arrival_time < earliest)
-            earliest = local[i].arrival_time;
-    }
-    return earliest;
 }
 
 // schedule_rr ──────────────────────────────────────────────────────
@@ -123,7 +127,7 @@ int schedule_rr(SchedulerState *state) {
 
         // Idle: nothing in queue yet
         if (queue_empty(&q)) {
-            int jump = next_arrival(local, enqueued, n, current_time);
+            int jump = next_arrival_time(local, enqueued, n, current_time);
             if (jump == -1) break;      // should not happen
             gantt_append(state, "IDLE", current_time, jump);
             state->idle_time += jump - current_time;

@@ -57,3 +57,45 @@ void gantt_coalesce(SchedulerState *state, const char *pid,
     e->end_time    = tick + 1;
     e->queue_level = queue_level;
 }
+// next_arrival_time ────────────────────────────────────────────────
+/* Find the next future arrival time.
+ *
+ * Used when:
+ *   CPU becomes idle and scheduler must jump forward.
+ *
+ * flags[] meaning:
+ *   done[]      for SJF/STCF
+ *   enqueued[]  for RR/MLFQ
+ *
+ * Returns:
+ *   earliest future arrival time
+ *   -1 if no future arrivals remain
+ */
+int next_arrival_time(const Process local[],
+                      const int flags[],
+                      int n,
+                      int current_time)
+{
+    int earliest = -1;
+
+    for (int i = 0; i < n; i++) {
+
+        // Skip:
+        //   finished/enqueued processes
+        //   already-arrived processes
+        if (flags[i] ||
+            local[i].arrival_time <= current_time)
+        {
+            continue;
+        }
+
+        // Update earliest future arrival
+        if (earliest == -1 ||
+            local[i].arrival_time < earliest)
+        {
+            earliest = local[i].arrival_time;
+        }
+    }
+
+    return earliest;
+}

@@ -21,4 +21,16 @@ void gantt_append(SchedulerState *state, const char *pid, int start, int end);
 void gantt_coalesce(SchedulerState *state, const char *pid,
                     int tick, int queue_level);
 
+// Arrival helpers ─────────────────────────────────────────────────
+
+// Find the next arrival time among unfinished/unenqueued processes.
+// Returns:
+//   earliest future arrival time
+//   -1 if no future arrivals exist
+
+int next_arrival_time(const Process local[],
+                 const int done[],
+                 int n,
+                 int current_time);
+
 #endif /* UTILS_H */

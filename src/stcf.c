@@ -37,17 +37,7 @@ static int pick_stcf(const Process local[], const int done[], int n,
     return best;
 }
 
-// find the next arrival time among unfinished processes
-static int next_arrival(const Process local[], const int done[], int n,
-                        int current_time) {
-    int earliest = -1;
-    for (int i = 0; i < n; i++) {
-        if (done[i] || local[i].arrival_time <= current_time) continue;
-        if (earliest == -1 || local[i].arrival_time < earliest)
-            earliest = local[i].arrival_time;
-    }
-    return earliest;
-}
+
 
 // schedule_stcf ────────────────────────────────────────────────────
 int schedule_stcf(SchedulerState *state) {
@@ -72,7 +62,7 @@ int schedule_stcf(SchedulerState *state) {
 
         // Idle: no process has arrived yet — jump to next arrival
         if (idx == -1) {
-            int jump = next_arrival(local, done, n, current_time);
+            int jump = next_arrival_time(local, done, n, current_time);
             if (jump == -1) break;
             gantt_coalesce(state, "IDLE", current_time, -1);
             // Extend the IDLE entry to cover the full gap

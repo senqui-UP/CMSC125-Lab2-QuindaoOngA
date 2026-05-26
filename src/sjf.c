@@ -45,17 +45,6 @@ static int pick_shortest(const Process local[], const int done[], int n,
     return best;
 }
 
-// find the next arrival time among unfinished processes
-static int next_arrival(const Process local[], const int done[], int n,
-                        int current_time) {
-    int earliest = -1;
-    for (int i = 0; i < n; i++) {
-        if (done[i] || local[i].arrival_time <= current_time) continue;
-        if (earliest == -1 || local[i].arrival_time < earliest)
-            earliest = local[i].arrival_time;
-    }
-    return earliest;
-}
 
 // schedule_sjf ─────────────────────────────────────────────────────
 int schedule_sjf(SchedulerState *state) {
@@ -80,7 +69,7 @@ int schedule_sjf(SchedulerState *state) {
 
         // Idle gap: no process has arrived yet
         if (idx == -1) {
-            int jump = next_arrival(local, done, n, current_time);
+            int jump = next_arrival_time(local, done, n, current_time);
             if (jump == -1) break;      // should not happen
             gantt_append(state, "IDLE", current_time, jump);
             state->idle_time += jump - current_time;
